@@ -1,0 +1,8 @@
+parameters:
+
+services:
+    property_normalizer:
+        class: Symfony\Component\Serializer\Normalizer\PropertyNormalizer
+        public: false
+        tags:
+            - { name: serializer.normalizer }

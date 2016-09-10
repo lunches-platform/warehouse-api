@@ -1,0 +1,9 @@
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+foods:
+    type: rest
+    resource: "@AppBundle/Controller/FoodsController.php"
+products:
+    type: rest
+    resource: "routing/products.yml"

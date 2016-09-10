@@ -1,0 +1,15 @@
+/app/config/parameters.yml
+/build/
+/phpunit.xml
+/var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
+!/var/logs
+/var/logs/*
+!/var/sessions
+/var/sessions/*
+/vendor/
+/web/bundles/
+.idea
+LunchesWarehouseAPI.paw

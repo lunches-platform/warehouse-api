@@ -1,0 +1,13 @@
+products:
+    type: rest
+    resource: "@AppBundle/Controller/ProductsController.php"
+
+incomes:
+    type: rest
+    parent: products
+    resource: "@AppBundle/Controller/IncomesController.php"
+
+outcomes:
+    type: rest
+    parent: products
+    resource: "@AppBundle/Controller/OutcomesController.php"
