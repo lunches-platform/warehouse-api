@@ -6,8 +6,8 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Outcome;
 use AppBundle\Entity\Product;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\NoRoute;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
+use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 
@@ -19,30 +19,27 @@ class OutcomesController extends FOSRestController
     /**
      * @param Outcome $outcome
      * @return \Symfony\Component\HttpFoundation\Response
-     * @NoRoute
-     * @Get("/products/{productId}/outcomes/{outcome}")
+     * @Get("/products/outcomes/{outcome}")
+     * @View
      */
     public function getOutcomeAction(Outcome $outcome)
     {
-        return $this->handleView(
-            $this->view($outcome, 200)
-        );
+        return $outcome;
     }
 
     /**
      * @param Product $product
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
+     * @View
      */
     public function getOutcomesAction(Product $product)
     {
         $repo = $this->getDoctrine()->getRepository('AppBundle:Outcome');
 
-        return $this->handleView(
-            $this->view($repo->findBy([
-                'product' => $product,
-            ]))
-        );
+        return $repo->findBy([
+            'product' => $product,
+        ]);
     }
 
     /**
@@ -58,6 +55,8 @@ class OutcomesController extends FOSRestController
      * @throws \InvalidArgumentException
      * @throws \LogicException
      * @throws \Money\UnknownCurrencyException
+     * 
+     * @View(statusCode=201)
      */
     public function postOutcomesAction(Product $product, ParamFetcher $params)
     {
@@ -70,6 +69,6 @@ class OutcomesController extends FOSRestController
         $em->persist($outcome);
         $em->flush();
 
-        return $this->handleView($this->view($outcome));
+        return $outcome;
     }
 }

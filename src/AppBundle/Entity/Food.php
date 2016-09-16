@@ -12,7 +12,7 @@ use Webmozart\Assert\Assert;
  * Class Food.
  * @ORM\Entity(repositoryClass="FoodRepository")
  */
-class Food
+class Food implements \JsonSerializable
 {
     /**
      * @var string
@@ -83,5 +83,16 @@ class Food
         Assert::stringNotEmpty($name, 'Name of the Food is required');
         Assert::range(mb_strlen($name), 3, 255);
         $this->name = $name;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => (string) $this->id,
+            'name' => $this->name,
+        ];
     }
 }

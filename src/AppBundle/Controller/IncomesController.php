@@ -7,8 +7,8 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Income;
 use AppBundle\Entity\Product;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\NoRoute;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
+use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 use Money\Currency;
@@ -22,31 +22,27 @@ class IncomesController extends FOSRestController
     /**
      * @param Income $income
      * @return \Symfony\Component\HttpFoundation\Response
-     * TODO does not work, fix it
-     * @NoRoute
-     * @Get("/products/{productId}/incomes/{income}")
+     * @Get("/products/incomes/{income}")
+     * @View
      */
     public function getIncomeAction(Income $income)
     {
-        return $this->handleView(
-            $this->view($income, 200)
-        );
+        return $income;
     }
 
     /**
      * @param Product $product
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
+     * @View
      */
     public function getIncomesAction(Product $product)
     {
         $repo = $this->getDoctrine()->getRepository('AppBundle:Income');
 
-        return $this->handleView(
-            $this->view($repo->findBy([
-                'product' => $product,
-            ]))
-        );
+        return $repo->findBy([
+            'product' => $product,
+        ]);
     }
 
     /**
@@ -64,10 +60,11 @@ class IncomesController extends FOSRestController
      * @throws \InvalidArgumentException
      * @throws \LogicException
      * @throws \Money\UnknownCurrencyException
+     *
+     * @View(statusCode=201);
      */
     public function postIncomesAction(Product $product, ParamFetcher $params)
     {
-        // TODO make price field required and forbid using negative
         $price = new Money((int) $params->get('price'), new Currency('UAH'));
         $quantity = $params->get('quantity');
         $supplier = $params->get('supplier');
@@ -79,6 +76,6 @@ class IncomesController extends FOSRestController
         $em->persist($income);
         $em->flush();
 
-        return $this->handleView($this->view($income));
+        return $income;
     }
 }

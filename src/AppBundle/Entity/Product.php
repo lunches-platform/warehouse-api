@@ -12,7 +12,7 @@ use Webmozart\Assert\Assert;
  * @ORM\Entity(repositoryClass="ProductRepository")
  * @ORM\Table(name="product")
  */
-class Product
+class Product implements \JsonSerializable
 {
     /**
      * @var string
@@ -148,5 +148,20 @@ class Product
             Assert::lessThanEq($weight, 100 * 1000); // 100 kg/litre per pcs
             $this->weightPerPcs = $weight;
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => (string) $this->id,
+            'name' => $this->name,
+            'brand' => $this->brand,
+            'food' => $this->food,
+            'pcs' => $this->pcs,
+            'weightPerPcs' => $this->weightPerPcs,
+        ];
     }
 }

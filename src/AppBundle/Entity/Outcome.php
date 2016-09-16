@@ -12,7 +12,7 @@ use Webmozart\Assert\Assert;
  * Class Outcome.
  * @ORM\Entity(repositoryClass="OutcomeRepository")
  */
-class Outcome
+class Outcome implements \JsonSerializable
 {
     /**
      * @var string
@@ -104,5 +104,18 @@ class Outcome
     private function product()
     {
         return $this->product;
+    }
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => (string) $this->id,
+            'productId' => $this->product->id(),
+//            'product' => $this->product,
+            'quantity' => $this->quantity,
+            'outcomeAt' => $this->outcomeAt,
+        ];
     }
 }
