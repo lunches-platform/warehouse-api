@@ -73,8 +73,8 @@ class Income
     {
         $this->id = Uuid::uuid4();
         $this->product = $product;
-        $this->price = $price;
         $this->createdAt = new \DateTimeImmutable();
+        $this->setPrice($price);
         $this->setPurchasedAt($purchasedAt);
         $this->setQuantity($quantity);
         $this->setSupplier($supplier);
@@ -130,6 +130,18 @@ class Income
     private function product()
     {
         return $this->product;
+    }
+
+    /**
+     * @param Money $price
+     * @throws \InvalidArgumentException
+     */
+    private function setPrice(Money $price)
+    {
+        if (!$price->isPositive()) {
+            throw new \InvalidArgumentException('Price must be positive');
+        }
+        $this->price = $price;
     }
 
 }
