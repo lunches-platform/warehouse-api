@@ -1,8 +1,8 @@
 parameters:
 
 services:
-    property_normalizer:
-        class: Symfony\Component\Serializer\Normalizer\PropertyNormalizer
+    json_normalizer:
+        class: Symfony\Component\Serializer\Normalizer\JsonSerializableNormalizer
         public: false
         tags:
             - { name: serializer.normalizer }
