@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Food;
+use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,30 +17,29 @@ class FoodsController extends FOSRestController
     /**
      * @param Food $food
      * @return \Symfony\Component\HttpFoundation\Response
+     * @View
      */
     public function getFoodAction(Food $food)
     {
-        return $this->handleView(
-            $this->view($food, 200)
-        );
+        return $food;
     }
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
+     * @View
      */
     public function getFoodsAction()
     {
         $repo = $this->getDoctrine()->getRepository('AppBundle:Food');
-        return $this->handleView(
-            $this->view($repo->findAll())
-        );
+        return $repo->findAll();
     }
 
     /**
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
+     * @View(statusCode=201);
      */
     public function postFoodsAction(Request $request)
     {
@@ -49,7 +49,7 @@ class FoodsController extends FOSRestController
         $em->persist($food);
         $em->flush();
 
-        return $this->handleView($this->view($food, 201));
+        return $food;
     }
 
     /**
@@ -57,6 +57,7 @@ class FoodsController extends FOSRestController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
+     * @View
      */
     public function putFoodAction(Food $food, Request $request)
     {
@@ -65,6 +66,6 @@ class FoodsController extends FOSRestController
         }
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->handleView($this->view($food, 200));
+        return $food;
     }
 }

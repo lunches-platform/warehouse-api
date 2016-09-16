@@ -6,6 +6,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Product;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
+use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 
@@ -17,24 +18,22 @@ class ProductsController extends FOSRestController
     /**
      * @param Product $product
      * @return \Symfony\Component\HttpFoundation\Response
+     * @View
      */
     public function getProductAction(Product $product)
     {
-        return $this->handleView(
-            $this->view($product, 200)
-        );
+        return $product;
     }
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
+     * @View
      */
     public function getProductsAction()
     {
         $repo = $this->getDoctrine()->getRepository('AppBundle:Product');
-        return $this->handleView(
-            $this->view($repo->findAll())
-        );
+        return $repo->findAll();
     }
 
     /**
@@ -51,6 +50,8 @@ class ProductsController extends FOSRestController
      * @throws \InvalidArgumentException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @throws \LogicException
+     *
+     * @View(statusCode=201)
      */
     public function postProductsAction(ParamFetcher $params)
     {
@@ -71,6 +72,6 @@ class ProductsController extends FOSRestController
         $em->persist($product);
         $em->flush();
 
-        return $this->handleView($this->view($product, 201));
+        return $product;
     }
 }
