@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JsonSerializable;
 use Money\Money;
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
@@ -13,7 +14,7 @@ use Webmozart\Assert\Assert;
  * Class Income.
  * @ORM\Entity(repositoryClass="IncomeRepository")
  */
-class Income
+class Income implements JsonSerializable
 {
     /**
      * @var string
@@ -144,4 +145,22 @@ class Income
         $this->price = $price;
     }
 
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => (string) $this->id,
+            'productId' => $this->product->id(),
+//            'product' => $this->product,
+            'quantity' => $this->quantity,
+            'price' => [
+                'amount' => $this->price->getAmount(),
+                'currency' => $this->price->getCurrency(),
+            ],
+            'purchasedAt' => $this->purchasedAt,
+            'supplier' => $this->supplier,
+        ];
+    }
 }
