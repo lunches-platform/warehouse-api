@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Product;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -26,14 +27,19 @@ class ProductsController extends FOSRestController
     }
 
     /**
+     * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \LogicException
+     * @QueryParam(name="like", description="Filter products by LIKE pattern")
      * @View
      */
-    public function getProductsAction()
+    public function getProductsAction(ParamFetcher $params)
     {
         $repo = $this->getDoctrine()->getRepository('AppBundle:Product');
-        return $repo->findAll();
+        if ($like = $params->get('like')) {
+            return $repo->findByNameLike($like);
+        } else {
+            return $repo->findAll();
+        }
     }
 
     /**
