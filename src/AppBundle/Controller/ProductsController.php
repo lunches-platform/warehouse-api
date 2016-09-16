@@ -10,6 +10,7 @@ use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
+use Symfony\Component\Validator\Constraints\Uuid;
 
 /**
  * Class ProductsController.
@@ -43,9 +44,9 @@ class ProductsController extends FOSRestController
     }
 
     /**
-     * @RequestParam(name="foodId", description="Food identifier")
-     * @RequestParam(name="name", description="Food identifier")
-     * @RequestParam(name="brand", description="Food identifier")
+     * @RequestParam(name="foodId", requirements=@Uuid, description="Food of Product")
+     * @RequestParam(name="name", description="Product name")
+     * @RequestParam(name="brandId", requirements=@Uuid, description="Product brand")
      * @RequestParam(name="pcs", requirements="(0|1)", description="Either Product distributes in pcs or no")
      * @RequestParam(name="weight", requirements="\d+",  strict=false, description="Product weight in corresponding unit")
      * 
@@ -61,15 +62,18 @@ class ProductsController extends FOSRestController
      */
     public function postProductsAction(ParamFetcher $params)
     {
-        $foodId = $params->get('foodId');
-        $food = $this->getDoctrine()->getRepository('AppBundle:Food')->find($foodId);
+        $food = $this->getDoctrine()->getRepository('AppBundle:Food')->find($params->get('foodId'));
         if (!$food) {
             throw $this->createNotFoundException('Food not found');
+        }
+        $brand = $this->getDoctrine()->getRepository('AppBundle:Brand')->find($params->get('brandId'));
+        if (!$brand) {
+            throw $this->createNotFoundException('Brand not found');
         }
         $product = new Product(
             $food,
             $params->get('name'),
-            $params->get('brand'),
+            $brand,
             $params->get('pcs'),
             $params->get('weight')
         );
