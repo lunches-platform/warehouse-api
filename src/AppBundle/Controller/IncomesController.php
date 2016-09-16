@@ -13,6 +13,7 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 use Money\Currency;
 use Money\Money;
+use Symfony\Component\Validator\Constraints\Uuid;
 
 /**
  * Class IncomesController.
@@ -50,12 +51,13 @@ class IncomesController extends FOSRestController
      * @param ParamFetcher $params
      *
      * @RequestParam(name="purchasedAt", strict=false, description="Date when product was purchased. Can be omitted")
-     * @RequestParam(name="supplier", description="Shop or supplier where product has been bought")
+     * @RequestParam(name="supplierId", requirements=@Uuid, description="Shop or supplier where product has been bought")
      * @RequestParam(name="quantity", description="Quantity of product. Float accepted")
      * @RequestParam(name="price", requirements="\d+", description="Price in smallest unit of currency")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @throws \Money\InvalidArgumentException
      * @throws \InvalidArgumentException
      * @throws \LogicException
@@ -67,8 +69,12 @@ class IncomesController extends FOSRestController
     {
         $price = new Money((int) $params->get('price'), new Currency('UAH'));
         $quantity = $params->get('quantity');
-        $supplier = $params->get('supplier');
         $purchasedAt = new \DateTimeImmutable($params->get('purchasedAt'));
+
+        $supplier = $this->getDoctrine()->getRepository('AppBundle:Supplier')->find($params->get('supplierId'));
+        if (!$supplier) {
+            throw $this->createNotFoundException('Supplier not found');
+        }
 
         $income = new Income($product, $quantity, $price, $supplier, $purchasedAt);
 

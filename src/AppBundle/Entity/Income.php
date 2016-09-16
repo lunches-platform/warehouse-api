@@ -49,9 +49,8 @@ class Income implements JsonSerializable
      */
     protected $purchasedAt;
     /**
-     * TODO implement Supplier and BasicSupplier
-     * @var string
-     * @ORM\Column(type="string")
+     * @var Supplier
+     * @ORM\ManyToOne(targetEntity="Supplier")
      */
     protected $supplier;
 
@@ -68,17 +67,17 @@ class Income implements JsonSerializable
         Product $product,
         $quantity,
         Money $price,
-        $supplier,
+        Supplier $supplier,
         \DateTimeImmutable $purchasedAt = null
     )
     {
         $this->id = Uuid::uuid4();
         $this->product = $product;
+        $this->supplier = $supplier;
         $this->createdAt = new \DateTimeImmutable();
         $this->setPrice($price);
         $this->setPurchasedAt($purchasedAt);
         $this->setQuantity($quantity);
-        $this->setSupplier($supplier);
     }
 
     /**
@@ -97,16 +96,6 @@ class Income implements JsonSerializable
         }
 
         $this->quantity = $quantity;
-    }
-
-    /**
-     * @param string $supplier
-     */
-    private function setSupplier($supplier)
-    {
-        Assert::stringNotEmpty($supplier, 'Supplier is required');
-        Assert::range(mb_strlen($supplier), 3, 255);
-        $this->supplier = $supplier;
     }
 
     /**
@@ -160,7 +149,7 @@ class Income implements JsonSerializable
                 'currency' => $this->price->getCurrency(),
             ],
             'purchasedAt' => $this->purchasedAt,
-            'supplier' => $this->supplier,
+            'supplierId' => $this->supplier->id(),
         ];
     }
 }
