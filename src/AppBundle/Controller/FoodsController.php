@@ -5,9 +5,10 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Food;
+use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
-use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Request\ParamFetcher;
 
 /**
  * Class FoodsController.
@@ -36,14 +37,16 @@ class FoodsController extends FOSRestController
     }
 
     /**
-     * @param Request $request
+     * @RequestParam(name="name", description="Food name")
+     * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
+     * @throws \InvalidArgumentException
      * @View(statusCode=201);
      */
-    public function postFoodsAction(Request $request)
+    public function postFoodsAction(ParamFetcher $params)
     {
-        $food = new Food($request->request->get('name'));
+        $food = new Food($params->get('name'));
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($food);
@@ -53,15 +56,16 @@ class FoodsController extends FOSRestController
     }
 
     /**
+     * @RequestParam(name="name", description="Food name")
      * @param Food $food
-     * @param Request $request
+     * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
      * @View
      */
-    public function putFoodAction(Food $food, Request $request)
+    public function putFoodAction(Food $food, ParamFetcher $params)
     {
-        if ($name = $request->request->get('name')) {
+        if ($name = $params->get('name')) {
             $food->changeName($name);
         }
         $this->getDoctrine()->getManager()->flush();
