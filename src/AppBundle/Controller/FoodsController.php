@@ -9,6 +9,7 @@ use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Class FoodsController.
@@ -40,13 +41,18 @@ class FoodsController extends FOSRestController
      * @RequestParam(name="name", description="Food name")
      * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      * @throws \LogicException
      * @throws \InvalidArgumentException
      * @View(statusCode=201);
      */
     public function postFoodsAction(ParamFetcher $params)
     {
-        $food = new Food($params->get('name'));
+        $name = $params->get('name');
+        if ($this->getDoctrine()->getRepository('AppBundle:Food')->findOneBy(['name' => $name])) {
+            throw new HttpException(400, 'Food with specified name is exist already');
+        }
+        $food = new Food($name);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($food);
