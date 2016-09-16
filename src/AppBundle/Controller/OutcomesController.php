@@ -6,7 +6,6 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Outcome;
 use AppBundle\Entity\Product;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\NoRoute;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -20,8 +19,7 @@ class OutcomesController extends FOSRestController
     /**
      * @param Outcome $outcome
      * @return \Symfony\Component\HttpFoundation\Response
-     * @NoRoute
-     * @Get("/products/{productId}/outcomes/{outcome}")
+     * @Get("/products/outcomes/{outcome}")
      * @View
      */
     public function getOutcomeAction(Outcome $outcome)

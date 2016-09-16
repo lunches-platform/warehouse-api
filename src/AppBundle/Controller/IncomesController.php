@@ -7,7 +7,6 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Income;
 use AppBundle\Entity\Product;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\NoRoute;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -23,9 +22,7 @@ class IncomesController extends FOSRestController
     /**
      * @param Income $income
      * @return \Symfony\Component\HttpFoundation\Response
-     * TODO does not work, fix it
-     * @NoRoute
-     * @Get("/products/{productId}/incomes/{income}")
+     * @Get("/products/incomes/{income}")
      * @View
      */
     public function getIncomeAction(Income $income)
