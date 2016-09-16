@@ -41,12 +41,24 @@ class Outcome implements \JsonSerializable
      * @Gedmo\Timestampable(on="create")
      */
     protected $createdAt;
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    protected $cook;
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    protected $warehouseKeeper;
 
     /**
      * Outcome constructor.
      * 
      * @param Product $product
      * @param $quantity
+     * @param string $warehouseKeeper
+     * @param string $cook
      * @param \DateTimeImmutable|null $outcomeAt
      * 
      * @throws \InvalidArgumentException
@@ -54,6 +66,8 @@ class Outcome implements \JsonSerializable
     public function __construct(
         Product $product,
         $quantity,
+        $warehouseKeeper,
+        $cook,
         \DateTimeImmutable $outcomeAt = null
     )
     {
@@ -62,6 +76,8 @@ class Outcome implements \JsonSerializable
         $this->createdAt = new \DateTimeImmutable();
         $this->setOutcomeAt($outcomeAt);
         $this->setQuantity($quantity);
+        $this->setWarehouseKeeper($warehouseKeeper);
+        $this->setCook($cook);
     }
 
     /**
@@ -96,6 +112,31 @@ class Outcome implements \JsonSerializable
         }
 
         $this->outcomeAt = $outcomeAt;
+    }
+    /**
+     * @param string $warehouseKeeper
+     * @throws \InvalidArgumentException
+     */
+    private function setWarehouseKeeper($warehouseKeeper)
+    {
+        Assert::stringNotEmpty($warehouseKeeper);
+        if ($warehouseKeeper !== 'WarehouseKeeper') {
+            throw new \InvalidArgumentException('WarehouseKeeper is invalid');
+        }
+        $this->warehouseKeeper = $warehouseKeeper;
+    }
+
+    /**
+     * @param string $cook
+     * @throws \InvalidArgumentException
+     */
+    private function setCook($cook)
+    {
+        Assert::stringNotEmpty($cook);
+        if ($cook !== 'Cook') {
+            throw new \InvalidArgumentException('Cook is invalid');
+        }
+        $this->cook = $cook;
     }
 
     /**

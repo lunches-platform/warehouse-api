@@ -38,9 +38,8 @@ class Product implements \JsonSerializable
      */
     protected $updatedAt;
     /**
-     * TODO implement Brand
-     * @var string
-     * @ORM\Column(type="string")
+     * @var Brand
+     * @ORM\ManyToOne(targetEntity="Brand")
      */
     protected $brand;
     /**
@@ -63,18 +62,18 @@ class Product implements \JsonSerializable
      * Product constructor.
      * @param Food $food
      * @param string $name
-     * @param string $brand
+     * @param Brand $brand
      * @param bool $pcs
      * @param int|null $weight
      * @throws \InvalidArgumentException
      */
-    public function __construct(Food $food, $name, $brand, $pcs = true, $weight = null)
+    public function __construct(Food $food, $name, Brand $brand, $pcs = true, $weight = null)
     {
         $this->id = Uuid::uuid4();
         $this->food = $food;
+        $this->brand = $brand;
         $this->createdAt = $this->updatedAt = new \DateTimeImmutable();
         $this->setName($name);
-        $this->setBrand($brand);
         $this->setPcsAndWeight($pcs, $weight);
     }
 
@@ -95,14 +94,6 @@ class Product implements \JsonSerializable
     }
 
     /**
-     * @param string $brand
-     */
-    public function changeBrand($brand)
-    {
-        $this->setBrand($brand);
-    }
-
-    /**
      * @return string
      */
     public function id()
@@ -118,16 +109,6 @@ class Product implements \JsonSerializable
         Assert::stringNotEmpty($name, 'Name of the product is required');
         Assert::range(mb_strlen($name), 3, 255, 'Name must be withing 3 and 255 characters length');
         $this->name = $name;
-    }
-
-    /**
-     * @param string $brand
-     */
-    private function setBrand($brand)
-    {
-        Assert::stringNotEmpty($brand, 'Brand is required');
-        Assert::range(mb_strlen($brand), 3, 255);
-        $this->brand = $brand;
     }
 
     /**

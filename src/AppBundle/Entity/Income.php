@@ -49,18 +49,30 @@ class Income implements JsonSerializable
      */
     protected $purchasedAt;
     /**
-     * TODO implement Supplier and BasicSupplier
+     * @var Supplier
+     * @ORM\ManyToOne(targetEntity="Supplier")
+     */
+    protected $supplier;
+
+    /**
      * @var string
      * @ORM\Column(type="string")
      */
-    protected $supplier;
+    protected $purchaser;
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    protected $warehouseKeeper;
 
     /**
      * Income constructor.
      * @param Product $product
      * @param $quantity
      * @param Money $price
-     * @param $supplier
+     * @param Supplier $supplier
+     * @param string $warehouseKeeper
+     * @param string $purchaser
      * @param \DateTimeImmutable|null $purchasedAt
      * @throws \InvalidArgumentException
      */
@@ -68,17 +80,21 @@ class Income implements JsonSerializable
         Product $product,
         $quantity,
         Money $price,
-        $supplier,
+        Supplier $supplier,
+        $warehouseKeeper,
+        $purchaser,
         \DateTimeImmutable $purchasedAt = null
     )
     {
         $this->id = Uuid::uuid4();
         $this->product = $product;
+        $this->supplier = $supplier;
         $this->createdAt = new \DateTimeImmutable();
         $this->setPrice($price);
         $this->setPurchasedAt($purchasedAt);
         $this->setQuantity($quantity);
-        $this->setSupplier($supplier);
+        $this->setWarehouseKeeper($warehouseKeeper);
+        $this->setPurchaser($purchaser);
     }
 
     /**
@@ -97,16 +113,6 @@ class Income implements JsonSerializable
         }
 
         $this->quantity = $quantity;
-    }
-
-    /**
-     * @param string $supplier
-     */
-    private function setSupplier($supplier)
-    {
-        Assert::stringNotEmpty($supplier, 'Supplier is required');
-        Assert::range(mb_strlen($supplier), 3, 255);
-        $this->supplier = $supplier;
     }
 
     /**
@@ -160,7 +166,33 @@ class Income implements JsonSerializable
                 'currency' => $this->price->getCurrency(),
             ],
             'purchasedAt' => $this->purchasedAt,
-            'supplier' => $this->supplier,
+            'supplierId' => $this->supplier->id(),
         ];
+    }
+
+    /**
+     * @param string $warehouseKeeper
+     * @throws \InvalidArgumentException
+     */
+    private function setWarehouseKeeper($warehouseKeeper)
+    {
+        Assert::stringNotEmpty($warehouseKeeper);
+        if ($warehouseKeeper !== 'WarehouseKeeper') {
+            throw new \InvalidArgumentException('WarehouseKeeper is invalid');
+        }
+        $this->warehouseKeeper = $warehouseKeeper;
+    }
+
+    /**
+     * @param string $purchaser
+     * @throws \InvalidArgumentException
+     */
+    private function setPurchaser($purchaser)
+    {
+        Assert::stringNotEmpty($purchaser);
+        if ($purchaser !== 'Purchaser') {
+            throw new \InvalidArgumentException('Purchaser is invalid');
+        }
+        $this->purchaser = $purchaser;
     }
 }

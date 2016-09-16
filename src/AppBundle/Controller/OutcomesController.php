@@ -48,6 +48,8 @@ class OutcomesController extends FOSRestController
      *
      * @RequestParam(name="outcomeAt", strict=false, description="Date when outcome was committed. Can be omitted")
      * @RequestParam(name="quantity", description="Quantity of product. Float accepted")
+     * @RequestParam(name="warehouseKeeper", description="Person who gives the Product")
+     * @RequestParam(name="cook", description="Person who gets the Product")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
@@ -62,8 +64,10 @@ class OutcomesController extends FOSRestController
     {
         $quantity = $params->get('quantity');
         $outcomeAt = new \DateTimeImmutable($params->get('outcomeAt'));
+        $warehouseKeeper = $params->get('warehouseKeeper');
+        $cook = $params->get('cook');
 
-        $outcome = new Outcome($product, $quantity, $outcomeAt);
+        $outcome = new Outcome($product, $quantity, $warehouseKeeper, $cook, $outcomeAt);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($outcome);
