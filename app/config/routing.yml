@@ -10,3 +10,6 @@ products:
 brands:
     type: rest
     resource: "@AppBundle/Controller/BrandsController.php"
+suppliers:
+    type: rest
+    resource: "@AppBundle/Controller/SuppliersController.php"
