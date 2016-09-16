@@ -83,6 +83,8 @@ swiftmailer:
 
 fos_rest:
     param_fetcher_listener: true
+    view:
+        view_response_listener: true
     routing_loader:
         default_format: json
         include_format: false # remove /resource/{id}.{_format} format part
