@@ -55,11 +55,24 @@ class Income implements JsonSerializable
     protected $supplier;
 
     /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    protected $purchaser;
+    /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    protected $warehouseKeeper;
+
+    /**
      * Income constructor.
      * @param Product $product
      * @param $quantity
      * @param Money $price
-     * @param $supplier
+     * @param Supplier $supplier
+     * @param string $warehouseKeeper
+     * @param string $purchaser
      * @param \DateTimeImmutable|null $purchasedAt
      * @throws \InvalidArgumentException
      */
@@ -68,6 +81,8 @@ class Income implements JsonSerializable
         $quantity,
         Money $price,
         Supplier $supplier,
+        $warehouseKeeper,
+        $purchaser,
         \DateTimeImmutable $purchasedAt = null
     )
     {
@@ -78,6 +93,8 @@ class Income implements JsonSerializable
         $this->setPrice($price);
         $this->setPurchasedAt($purchasedAt);
         $this->setQuantity($quantity);
+        $this->setWarehouseKeeper($warehouseKeeper);
+        $this->setPurchaser($purchaser);
     }
 
     /**
@@ -151,5 +168,31 @@ class Income implements JsonSerializable
             'purchasedAt' => $this->purchasedAt,
             'supplierId' => $this->supplier->id(),
         ];
+    }
+
+    /**
+     * @param string $warehouseKeeper
+     * @throws \InvalidArgumentException
+     */
+    private function setWarehouseKeeper($warehouseKeeper)
+    {
+        Assert::stringNotEmpty($warehouseKeeper);
+        if ($warehouseKeeper !== 'WarehouseKeeper') {
+            throw new \InvalidArgumentException('WarehouseKeeper is invalid');
+        }
+        $this->warehouseKeeper = $warehouseKeeper;
+    }
+
+    /**
+     * @param string $purchaser
+     * @throws \InvalidArgumentException
+     */
+    private function setPurchaser($purchaser)
+    {
+        Assert::stringNotEmpty($purchaser);
+        if ($purchaser !== 'Purchaser') {
+            throw new \InvalidArgumentException('Purchaser is invalid');
+        }
+        $this->purchaser = $purchaser;
     }
 }

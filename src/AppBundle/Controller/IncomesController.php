@@ -54,6 +54,8 @@ class IncomesController extends FOSRestController
      * @RequestParam(name="supplierId", requirements=@Uuid, description="Shop or supplier where product has been bought")
      * @RequestParam(name="quantity", description="Quantity of product. Float accepted")
      * @RequestParam(name="price", requirements="\d+", description="Price in smallest unit of currency")
+     * @RequestParam(name="warehouseKeeper", description="Person who is responsible about warehouse management")
+     * @RequestParam(name="purchaser", description="Person who has bought a Product")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
@@ -76,7 +78,10 @@ class IncomesController extends FOSRestController
             throw $this->createNotFoundException('Supplier not found');
         }
 
-        $income = new Income($product, $quantity, $price, $supplier, $purchasedAt);
+        $warehouseKeeper = $params->get('warehouseKeeper');
+        $purchaser = $params->get('purchaser');
+
+        $income = new Income($product, $quantity, $price, $supplier, $warehouseKeeper, $purchaser, $purchasedAt);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($income);
