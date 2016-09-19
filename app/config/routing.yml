@@ -13,3 +13,6 @@ brands:
 suppliers:
     type: rest
     resource: "@AppBundle/Controller/SuppliersController.php"
+categories:
+    type: rest
+    resource: "@AppBundle/Controller/CategoriesController.php"

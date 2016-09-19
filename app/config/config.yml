@@ -91,6 +91,7 @@ fos_rest:
         include_format: false # remove /resource/{id}.{_format} format part
     exception:
         enabled: true
+#        exception_controller: 'Acme\DemoBundle\Controller\ExceptionController::showAction'
         codes:
             'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
             'InvalidArgumentException': 400
