@@ -11,6 +11,7 @@ use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Validator\Constraints\Uuid;
 
 /**
  * Class FoodsController.
@@ -47,8 +48,10 @@ class FoodsController extends FOSRestController
 
     /**
      * @RequestParam(name="name", description="Food name")
+     * @RequestParam(name="categoryId", strict=false, requirements=@Uuid, description="Category to assign")
      * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      * @throws \LogicException
      * @throws \InvalidArgumentException
@@ -60,7 +63,15 @@ class FoodsController extends FOSRestController
         if ($this->getDoctrine()->getRepository('AppBundle:Food')->findOneBy(['name' => $name])) {
             throw new HttpException(400, 'Food with specified name is exist already');
         }
+
         $food = new Food($name);
+        if ($categoryId = $params->get('categoryId')) {
+            $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($categoryId);
+            if (!$category) {
+                throw $this->createNotFoundException('Category not found');
+            }
+            $food->assignCategory($category);
+        }
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($food);
