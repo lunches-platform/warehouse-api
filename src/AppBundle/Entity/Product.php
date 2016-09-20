@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Swagger\Annotations AS SWG;
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
 
@@ -11,6 +12,7 @@ use Webmozart\Assert\Assert;
  * Class Product.
  * @ORM\Entity(repositoryClass="ProductRepository")
  * @ORM\Table(name="product")
+ * @SWG\Definition(required={"food", "name", "brand"})
  */
 class Product implements \JsonSerializable
 {
@@ -18,43 +20,51 @@ class Product implements \JsonSerializable
      * @var string
      * @ORM\Column(type="guid")
      * @ORM\Id
+     * @SWG\Property()
      */
     protected $id;
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @SWG\Property()
      */
     protected $name;
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
+     * @SWG\Property()
      */
     protected $createdAt;
     /**
      * @var string
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
+     * @SWG\Property()
      */
     protected $updatedAt;
     /**
      * @var Brand
      * @ORM\ManyToOne(targetEntity="Brand")
+     * @SWG\Property(ref="#/definitions/Brand")
      */
     protected $brand;
     /**
      * @var Food
      * @ORM\ManyToOne(targetEntity="Food")
+     * @SWG\Property(ref="#/definitions/Food")
      */
     protected $food;
     /**
      * @var bool
      * @ORM\Column(type="boolean")
+     * @SWG\Property()
      */
     protected $pcs = true;
     /**
      * @var int
      * @ORM\Column(type="integer")
+     * @SWG\Property()
      */
     protected $weightPerPcs;
 

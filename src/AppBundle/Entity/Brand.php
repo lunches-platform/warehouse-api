@@ -6,11 +6,13 @@ namespace AppBundle\Entity;
 use Ramsey\Uuid\Uuid;
 use Doctrine\ORM\Mapping AS ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Swagger\Annotations AS SWG;
 use Webmozart\Assert\Assert;
 
 /**
  * Class Brand.
  * @ORM\Entity(repositoryClass="BrandRepository")
+ * @SWG\Definition(required={"name"})
  */
 class Brand implements \JsonSerializable
 {
@@ -18,12 +20,14 @@ class Brand implements \JsonSerializable
      * @var string
      * @ORM\Column(type="guid")
      * @ORM\Id
+     * @SWG\Property()
      */
     protected $id;
 
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @SWG\Property()
      */
     protected $name;
 
@@ -31,12 +35,16 @@ class Brand implements \JsonSerializable
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
+     * @SWG\Property()
      */
     protected $createdAt;
 
     /**
+     * Whether brand is manually confirmed or not
+     * 
      * @var bool
      * @ORM\Column(type="boolean")
+     * @SWG\Property()
      */
     protected $confirmed = false;
 

@@ -4,12 +4,14 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Swagger\Annotations AS SWG;
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
 
 /**
  * Class Category.
  * @ORM\Entity(repositoryClass="CategoryRepository")
+ * @SWG\Definition(required={"name","type","unit"})
  */
 class Category implements \JsonSerializable
 {
@@ -17,39 +19,46 @@ class Category implements \JsonSerializable
      * @var string
      * @ORM\Id
      * @ORM\Column(type="guid")
+     * @SWG\Property()
      */
     protected $id;
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @SWG\Property()
      */
     protected $name;
     /**
      * @var string
      * @ORM\Column(type="text", nullable=true)
+     * @SWG\Property()
      */
     protected $description;
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @SWG\Property()
      */
     protected $type;
     /**
      * One of gr|ml
      * @var string
      * @ORM\Column(type="string", length=3)
+     * @SWG\Property(enum={"gr","ml"})
      */
     protected $unit;
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
+     * @SWG\Property()
      */
     protected $createdAt;
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
+     * @SWG\Property()
      */
     protected $updatedAt;
 
