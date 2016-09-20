@@ -18,3 +18,7 @@ services:
     app_bundle.controller.categories_controller:
         class: AppBundle\Controller\CategoriesController
         arguments: ['@doctrine']
+
+    app_bundle.controller.suppliers_controller:
+        class: AppBundle\Controller\SuppliersController
+        arguments: ['@doctrine']
