@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Swagger\Annotations AS SWG;
 use JsonSerializable;
 use Money\Money;
 use Ramsey\Uuid\Uuid;
@@ -13,6 +14,19 @@ use Webmozart\Assert\Assert;
 /**
  * Class Income.
  * @ORM\Entity(repositoryClass="IncomeRepository")
+ * @SWG\Definition(
+ *     required={"product","quantity","price","supplier"},
+ *     @SWG\Property(
+ *         property="price",
+ *         description="Price of the product",
+ *         type="integer"
+ *     ),
+ *     @SWG\Property(
+ *         property="currency",
+ *         description="Currency of the price",
+ *         type="string"
+ *     )
+ * )
  */
 class Income implements JsonSerializable
 {
@@ -20,16 +34,19 @@ class Income implements JsonSerializable
      * @var string
      * @ORM\Id
      * @ORM\Column(type="guid")
+     * @SWG\Property()
      */
     protected $id;
     /**
      * @var Product
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Product")
+     * @SWG\Property(ref="#/definitions/Product")
      */
     protected $product;
     /**
      * @var float
      * @ORM\Column(type="float")
+     * @SWG\Property()
      */
     protected $quantity;
     /**
@@ -41,27 +58,31 @@ class Income implements JsonSerializable
      * @var \DateTime
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
+     * @SWG\Property()
      */
     protected $createdAt;
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
+     * @SWG\Property()
      */
     protected $purchasedAt;
     /**
      * @var Supplier
      * @ORM\ManyToOne(targetEntity="Supplier")
+     * @SWG\Property(ref="#/definitions/Supplier")
      */
     protected $supplier;
-
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @SWG\Property()
      */
     protected $purchaser;
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @SWG\Property()
      */
     protected $warehouseKeeper;
 

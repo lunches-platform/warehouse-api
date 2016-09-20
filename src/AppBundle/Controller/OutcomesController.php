@@ -5,17 +5,30 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Outcome;
 use AppBundle\Entity\Product;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 
 /**
  * Class OutcomesController.
  */
-class OutcomesController extends FOSRestController
+class OutcomesController
 {
+    /**
+     * @var Registry
+     */
+    protected $doctrine;
+
+    /**
+     * FoodsController constructor.
+     * @param Registry $doctrine
+     */
+    public function __construct(Registry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
     /**
      * @param Outcome $outcome
      * @return \Symfony\Component\HttpFoundation\Response
@@ -35,7 +48,7 @@ class OutcomesController extends FOSRestController
      */
     public function getOutcomesAction(Product $product)
     {
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Outcome');
+        $repo = $this->doctrine->getRepository('AppBundle:Outcome');
 
         return $repo->findBy([
             'product' => $product,
@@ -69,7 +82,7 @@ class OutcomesController extends FOSRestController
 
         $outcome = new Outcome($product, $quantity, $warehouseKeeper, $cook, $outcomeAt);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $em->persist($outcome);
         $em->flush();
 

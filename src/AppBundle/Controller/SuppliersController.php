@@ -5,17 +5,30 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Supplier;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Class SuppliersController.
  */
-class SuppliersController extends FOSRestController
+class SuppliersController
 {
+    /**
+     * @var Registry
+     */
+    protected $doctrine;
+
+    /**
+     * FoodsController constructor.
+     * @param Registry $doctrine
+     */
+    public function __construct(Registry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
     /**
      * @param Supplier $supplier
      * @return \Symfony\Component\HttpFoundation\Response
@@ -33,7 +46,7 @@ class SuppliersController extends FOSRestController
      */
     public function getSuppliersAction()
     {
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Supplier');
+        $repo = $this->doctrine->getRepository('AppBundle:Supplier');
 
         return $repo->findAll();
     }
@@ -50,12 +63,12 @@ class SuppliersController extends FOSRestController
     public function postSuppliersAction(ParamFetcher $params)
     {
         $name = $params->get('name');
-        if ($this->getDoctrine()->getRepository('AppBundle:Supplier')->findOneBy(['name' => $name])) {
+        if ($this->doctrine->getRepository('AppBundle:Supplier')->findOneBy(['name' => $name])) {
             throw new HttpException(400, 'Supplier with specified name is exist already');
         }
         $supplier = new Supplier($name);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $em->persist($supplier);
         $em->flush();
 

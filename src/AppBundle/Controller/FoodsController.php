@@ -5,19 +5,33 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Food;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Uuid;
 
 /**
  * Class FoodsController.
  */
-class FoodsController extends FOSRestController
+class FoodsController
 {
+    /**
+     * @var Registry
+     */
+    protected $doctrine;
+
+    /**
+     * FoodsController constructor.
+     * @param Registry $doctrine
+     */
+    public function __construct(Registry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
     /**
      * @param Food $food
      * @return \Symfony\Component\HttpFoundation\Response
@@ -37,7 +51,7 @@ class FoodsController extends FOSRestController
      */
     public function getFoodsAction(ParamFetcher $params)
     {
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Food');
+        $repo = $this->doctrine->getRepository('AppBundle:Food');
 
         if ($like = $params->get('like')) {
             return $repo->findByNameLike($like);
@@ -60,20 +74,20 @@ class FoodsController extends FOSRestController
     public function postFoodsAction(ParamFetcher $params)
     {
         $name = $params->get('name');
-        if ($this->getDoctrine()->getRepository('AppBundle:Food')->findOneBy(['name' => $name])) {
+        if ($this->doctrine->getRepository('AppBundle:Food')->findOneBy(['name' => $name])) {
             throw new HttpException(400, 'Food with specified name is exist already');
         }
 
         $food = new Food($name);
         if ($categoryId = $params->get('categoryId')) {
-            $category = $this->getDoctrine()->getRepository('AppBundle:Category')->find($categoryId);
+            $category = $this->doctrine->getRepository('AppBundle:Category')->find($categoryId);
             if (!$category) {
-                throw $this->createNotFoundException('Category not found');
+                throw new NotFoundHttpException('Category not found');
             }
             $food->assignCategory($category);
         }
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $em->persist($food);
         $em->flush();
 
@@ -93,7 +107,7 @@ class FoodsController extends FOSRestController
         if ($name = $params->get('name')) {
             $food->changeName($name);
         }
-        $this->getDoctrine()->getManager()->flush();
+        $this->doctrine->getManager()->flush();
 
         return $food;
     }

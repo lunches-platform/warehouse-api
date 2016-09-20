@@ -6,3 +6,31 @@ services:
         public: false
         tags:
             - { name: serializer.normalizer }
+
+    app_bundle.controller.foods_controller:
+        class: AppBundle\Controller\FoodsController
+        arguments: ['@doctrine']
+
+    app_bundle.controller.brands_controller:
+        class: AppBundle\Controller\BrandsController
+        arguments: ['@doctrine']
+
+    app_bundle.controller.categories_controller:
+        class: AppBundle\Controller\CategoriesController
+        arguments: ['@doctrine']
+
+    app_bundle.controller.suppliers_controller:
+        class: AppBundle\Controller\SuppliersController
+        arguments: ['@doctrine']
+
+    app_bundle.controller.products_controller:
+        class: AppBundle\Controller\ProductsController
+        arguments: ['@doctrine']
+
+    app_bundle.controller.outcomes_controller:
+        class: AppBundle\Controller\OutcomesController
+        arguments: ['@doctrine']
+
+    app_bundle.controller.incomes_controller:
+        class: AppBundle\Controller\IncomesController
+        arguments: ['@doctrine']

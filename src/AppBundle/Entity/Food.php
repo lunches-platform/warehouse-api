@@ -6,11 +6,13 @@ namespace AppBundle\Entity;
 use Ramsey\Uuid\Uuid;
 use Doctrine\ORM\Mapping AS ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Swagger\Annotations AS SWG;
 use Webmozart\Assert\Assert;
 
 /**
  * Class Food.
  * @ORM\Entity(repositoryClass="FoodRepository")
+ * @SWG\Definition(required={"name"})
  */
 class Food implements \JsonSerializable
 {
@@ -18,12 +20,14 @@ class Food implements \JsonSerializable
      * @var string
      * @ORM\Column(type="guid")
      * @ORM\Id
+     * @SWG\Property()
      */
     protected $id;
 
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @SWG\Property()
      */
     protected $name;
 
@@ -31,6 +35,7 @@ class Food implements \JsonSerializable
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
+     * @SWG\Property()
      */
     protected $createdAt;
 
@@ -38,12 +43,14 @@ class Food implements \JsonSerializable
      * @var string
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
+     * @SWG\Property()
      */
     protected $updatedAt;
 
     /**
      * @var Category
      * @ORM\ManyToOne(targetEntity="Category")
+     * @SWG\Property(ref="#/definitions/Category")
      */
     protected $category;
 

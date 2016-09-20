@@ -6,11 +6,13 @@ namespace AppBundle\Entity;
 use Ramsey\Uuid\Uuid;
 use Doctrine\ORM\Mapping AS ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Swagger\Annotations AS SWG;
 use Webmozart\Assert\Assert;
 
 /**
  * Class Supplier.
  * @ORM\Entity(repositoryClass="SupplierRepository")
+ * @SWG\Definition(required={"name"})
  */
 class Supplier implements \JsonSerializable
 {
@@ -18,12 +20,14 @@ class Supplier implements \JsonSerializable
      * @var string
      * @ORM\Column(type="guid")
      * @ORM\Id
+     * @SWG\Property()
      */
     protected $id;
 
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @SWG\Property()
      */
     protected $name;
 
@@ -31,12 +35,16 @@ class Supplier implements \JsonSerializable
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
+     * @SWG\Property()
      */
     protected $createdAt;
 
     /**
+     * Whether supplier is confirmed manually or not
+     *
      * @var bool
      * @ORM\Column(type="boolean")
+     * @SWG\Property()
      */
     protected $confirmed = false;
 

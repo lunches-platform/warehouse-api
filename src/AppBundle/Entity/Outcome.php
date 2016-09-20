@@ -5,12 +5,14 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Swagger\Annotations AS SWG;
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
 
 /**
  * Class Outcome.
  * @ORM\Entity(repositoryClass="OutcomeRepository")
+ * @SWG\Definition(required={"product","quantity"})
  */
 class Outcome implements \JsonSerializable
 {
@@ -18,37 +20,44 @@ class Outcome implements \JsonSerializable
      * @var string
      * @ORM\Id
      * @ORM\Column(type="guid")
+     * @SWG\Property()
      */
     protected $id;
     /**
      * @var Product
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Product")
+     * @SWG\Property(ref="#/definitions/Product")
      */
     protected $product;
     /**
      * @var float
      * @ORM\Column(type="float")
+     * @SWG\Property()
      */
     protected $quantity;
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
+     * @SWG\Property()
      */
     protected $outcomeAt;
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
+     * @SWG\Property()
      */
     protected $createdAt;
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @SWG\Property()
      */
     protected $cook;
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @SWG\Property()
      */
     protected $warehouseKeeper;
 
