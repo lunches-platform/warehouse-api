@@ -26,3 +26,7 @@ services:
     app_bundle.controller.products_controller:
         class: AppBundle\Controller\ProductsController
         arguments: ['@doctrine']
+
+    app_bundle.controller.outcomes_controller:
+        class: AppBundle\Controller\OutcomesController
+        arguments: ['@doctrine']
