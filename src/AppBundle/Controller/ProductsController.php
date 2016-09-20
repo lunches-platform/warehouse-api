@@ -5,18 +5,32 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Product;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Uuid;
 
 /**
  * Class ProductsController.
  */
-class ProductsController extends FOSRestController
+class ProductsController
 {
+    /**
+     * @var Registry
+     */
+    protected $doctrine;
+
+    /**
+     * FoodsController constructor.
+     * @param Registry $doctrine
+     */
+    public function __construct(Registry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
     /**
      * @param Product $product
      * @return \Symfony\Component\HttpFoundation\Response
@@ -35,7 +49,7 @@ class ProductsController extends FOSRestController
      */
     public function getProductsAction(ParamFetcher $params)
     {
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Product');
+        $repo = $this->doctrine->getRepository('AppBundle:Product');
         if ($like = $params->get('like')) {
             return $repo->findByNameLike($like);
         } else {
@@ -62,13 +76,13 @@ class ProductsController extends FOSRestController
      */
     public function postProductsAction(ParamFetcher $params)
     {
-        $food = $this->getDoctrine()->getRepository('AppBundle:Food')->find($params->get('foodId'));
+        $food = $this->doctrine->getRepository('AppBundle:Food')->find($params->get('foodId'));
         if (!$food) {
-            throw $this->createNotFoundException('Food not found');
+            throw new NotFoundHttpException('Food not found');
         }
-        $brand = $this->getDoctrine()->getRepository('AppBundle:Brand')->find($params->get('brandId'));
+        $brand = $this->doctrine->getRepository('AppBundle:Brand')->find($params->get('brandId'));
         if (!$brand) {
-            throw $this->createNotFoundException('Brand not found');
+            throw new NotFoundHttpException('Brand not found');
         }
         $product = new Product(
             $food,
@@ -78,7 +92,7 @@ class ProductsController extends FOSRestController
             $params->get('weight')
         );
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $em->persist($product);
         $em->flush();
 
