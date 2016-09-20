@@ -10,6 +10,7 @@ use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Swagger\Annotations AS SWG;
 
 /**
  * Class CategoriesController.
@@ -30,6 +31,24 @@ class CategoriesController
         $this->doctrine = $doctrine;
     }
     /**
+     * @SWG\Get(
+     *     path="/categories/{categoryId}",
+     *     description="Get Category by ID",
+     *     operationId="findPetById",
+     *     @SWG\Parameter(
+     *         description="ID of category",
+     *         format="uuid",
+     *         type="string",
+     *         in="path",
+     *         name="categoryId",
+     *         required=true,
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Category",
+     *         @SWG\Schema(ref="#/definitions/Category")
+     *     ),
+     * )
      * @param Category $category
      * @return \Symfony\Component\HttpFoundation\Response
      * @View
@@ -40,6 +59,12 @@ class CategoriesController
     }
 
     /**
+     * @SWG\Get(
+     *     path="/categories",
+     *     description="Returns all pets from the system that the user has access to",
+     *     operationId="getCategoriesAction",
+     *     @SWG\Response(response=200, description="List of Categories", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Category"))),
+     * )
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
      * @View
@@ -52,6 +77,35 @@ class CategoriesController
     }
 
     /**
+     * @SWG\Post(
+     *     path="/categories",
+     *     operationId="postCategoriesAction",
+     *     description="Creates new category",
+     *     @SWG\Parameter(
+     *         name="name",
+     *         in="body",
+     *         description="Category name",
+     *         required=true,
+     *         @SWG\Schema(ref="#/definitions/Category"),
+     *     ),
+     *     @SWG\Parameter(
+     *         name="type",
+     *         in="body",
+     *         description="Category type. It can be treated as 'category of category' or just section",
+     *         required=true,
+     *         @SWG\Schema(ref="#/definitions/Category"),
+     *     ),
+     *     @SWG\Parameter(
+     *         name="unit",
+     *         in="body",
+     *         description="Smallest Unit of the Product.",
+     *         required=true,
+     *         @SWG\Schema(ref="#/definitions/Category"),
+     *     ),
+     *     @SWG\Parameter(name="description", in="body", @SWG\Schema(ref="#/definitions/Category")),
+     *     @SWG\Response(response=201, description="Newly created Category", @SWG\Schema(ref="#/definitions/Category") ),
+     * )
+     *
      * @RequestParam(name="name")
      * @RequestParam(name="type")
      * @RequestParam(name="unit", requirements="(ml|gr)")
