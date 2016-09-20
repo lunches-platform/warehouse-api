@@ -5,17 +5,30 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Category;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Class CategoriesController.
  */
-class CategoriesController extends FOSRestController
+class CategoriesController
 {
+    /**
+     * @var Registry
+     */
+    protected $doctrine;
+
+    /**
+     * FoodsController constructor.
+     * @param Registry $doctrine
+     */
+    public function __construct(Registry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
     /**
      * @param Category $category
      * @return \Symfony\Component\HttpFoundation\Response
@@ -33,7 +46,7 @@ class CategoriesController extends FOSRestController
      */
     public function getCategoriesAction()
     {
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Category');
+        $repo = $this->doctrine->getRepository('AppBundle:Category');
 
         return $repo->findAll();
     }
@@ -55,7 +68,7 @@ class CategoriesController extends FOSRestController
      */
     public function postCategoriesAction(ParamFetcher $params)
     {
-        if ($this->getDoctrine()->getRepository('AppBundle:Category')->findOneBy([
+        if ($this->doctrine->getRepository('AppBundle:Category')->findOneBy([
             'name' => $name = $params->get('name'),
             'type' => $type = $params->get('type'),
         ])) {
@@ -63,7 +76,7 @@ class CategoriesController extends FOSRestController
         }
         $category = new Category($name, $type, $params->get('unit'), $params->get('description'));
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $em->persist($category);
         $em->flush();
 

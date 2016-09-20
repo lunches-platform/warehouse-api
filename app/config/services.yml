@@ -14,3 +14,7 @@ services:
     app_bundle.controller.brands_controller:
         class: AppBundle\Controller\BrandsController
         arguments: ['@doctrine']
+
+    app_bundle.controller.categories_controller:
+        class: AppBundle\Controller\CategoriesController
+        arguments: ['@doctrine']
