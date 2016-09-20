@@ -99,3 +99,10 @@ fos_rest:
             'Doctrine\ORM\ORMException': 400
     body_converter:
         enabled: true
+
+nelmio_cors:
+    paths:
+        '^/':
+            allow_origin: ['*']
+            allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+            max_age: 3600
