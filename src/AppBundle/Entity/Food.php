@@ -60,6 +60,15 @@ class Food implements \JsonSerializable
     }
 
     /**
+     * @param Category $category
+     */
+    public function assignCategory(Category $category)
+    {
+        Assert::null($this->category);
+        $this->category = $category;
+    }
+
+    /**
      * @param string $name
      */
     public function changeName($name)
@@ -93,6 +102,7 @@ class Food implements \JsonSerializable
         return [
             'id' => (string) $this->id,
             'name' => $this->name,
+            'category' => null === $this->category ? null : $this->category->name(),
         ];
     }
 }
