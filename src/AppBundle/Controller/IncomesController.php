@@ -6,20 +6,34 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Income;
 use AppBundle\Entity\Product;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 use Money\Currency;
 use Money\Money;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Uuid;
 
 /**
  * Class IncomesController.
  */
-class IncomesController extends FOSRestController
+class IncomesController
 {
+    /**
+     * @var Registry
+     */
+    protected $doctrine;
+
+    /**
+     * FoodsController constructor.
+     * @param Registry $doctrine
+     */
+    public function __construct(Registry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
     /**
      * @param Income $income
      * @return \Symfony\Component\HttpFoundation\Response
@@ -39,7 +53,7 @@ class IncomesController extends FOSRestController
      */
     public function getIncomesAction(Product $product)
     {
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Income');
+        $repo = $this->doctrine->getRepository('AppBundle:Income');
 
         return $repo->findBy([
             'product' => $product,
@@ -73,9 +87,9 @@ class IncomesController extends FOSRestController
         $quantity = $params->get('quantity');
         $purchasedAt = new \DateTimeImmutable($params->get('purchasedAt'));
 
-        $supplier = $this->getDoctrine()->getRepository('AppBundle:Supplier')->find($params->get('supplierId'));
+        $supplier = $this->doctrine->getRepository('AppBundle:Supplier')->find($params->get('supplierId'));
         if (!$supplier) {
-            throw $this->createNotFoundException('Supplier not found');
+            throw new NotFoundHttpException('Supplier not found');
         }
 
         $warehouseKeeper = $params->get('warehouseKeeper');
@@ -83,7 +97,7 @@ class IncomesController extends FOSRestController
 
         $income = new Income($product, $quantity, $price, $supplier, $warehouseKeeper, $purchaser, $purchasedAt);
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $em->persist($income);
         $em->flush();
 

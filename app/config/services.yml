@@ -30,3 +30,7 @@ services:
     app_bundle.controller.outcomes_controller:
         class: AppBundle\Controller\OutcomesController
         arguments: ['@doctrine']
+
+    app_bundle.controller.incomes_controller:
+        class: AppBundle\Controller\IncomesController
+        arguments: ['@doctrine']
