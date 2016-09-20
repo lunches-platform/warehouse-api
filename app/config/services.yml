@@ -10,3 +10,7 @@ services:
     app_bundle.controller.foods_controller:
         class: AppBundle\Controller\FoodsController
         arguments: ['@doctrine']
+
+    app_bundle.controller.brands_controller:
+        class: AppBundle\Controller\BrandsController
+        arguments: ['@doctrine']
