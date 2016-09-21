@@ -89,7 +89,6 @@ class ProductsController
      *         in="body",
      *         required=true,
      *         description="Product name",
-     *         required=true,
      *         @SWG\Schema(ref="#/definitions/Product"),
      *     ),
      *     @SWG\Parameter(
