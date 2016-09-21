@@ -86,7 +86,7 @@ class OutcomesController
      *         type="float",
      *         required=true,
      *         in="body",
-     *         description="Outcome quantity",
+     *         description="Quantity of outcome Product",
      *         @SWG\Schema(ref="#/definitions/Outcome"),
      *     ),
      *     @SWG\Parameter(
