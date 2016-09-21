@@ -34,7 +34,7 @@ class CategoriesController
      * @SWG\Get(
      *     path="/categories/{categoryId}",
      *     description="Get Category by ID",
-     *     operationId="findPetById",
+     *     operationId="getCategoryAction",
      *     @SWG\Parameter(
      *         description="ID of category",
      *         format="uuid",
@@ -61,7 +61,7 @@ class CategoriesController
     /**
      * @SWG\Get(
      *     path="/categories",
-     *     description="Returns all pets from the system that the user has access to",
+     *     description="Return all categories registered",
      *     operationId="getCategoriesAction",
      *     @SWG\Response(response=200, description="List of Categories", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Category"))),
      * )

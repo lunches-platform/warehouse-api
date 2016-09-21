@@ -13,6 +13,7 @@ use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Uuid;
+use Swagger\Annotations AS SWG;
 
 /**
  * Class FoodsController.
@@ -33,6 +34,15 @@ class FoodsController
         $this->doctrine = $doctrine;
     }
     /**
+     * @SWG\Get(
+     *     path="/foods/{foodId}",
+     *     description="Get Food by ID",
+     *     operationId="getFoodAction",
+     *     @SWG\Parameter(
+     *         name="foodId", format="uuid", type="string", required=true, in="path", description="ID of food",
+     *     ),
+     *     @SWG\Response(response=200, description="Food", @SWG\Schema(ref="#/definitions/Food")),
+     * )
      * @param Food $food
      * @return \Symfony\Component\HttpFoundation\Response
      * @View
@@ -43,6 +53,12 @@ class FoodsController
     }
 
     /**
+     * @SWG\Get(
+     *     path="/foods",
+     *     description="Return all foods registered",
+     *     operationId="getFoodsAction",
+     *     @SWG\Response(response=200, description="List of Foods", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Food"))),
+     * )
      * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
@@ -61,6 +77,27 @@ class FoodsController
     }
 
     /**
+     * @SWG\Post(
+     *     path="/foods",
+     *     operationId="postFoodsAction",
+     *     description="Creates new food",
+     *     @SWG\Parameter(
+     *         name="name",
+     *         in="body",
+     *         description="Food name",
+     *         required=true,
+     *         @SWG\Schema(ref="#/definitions/Food"),
+     *     ),
+     *     @SWG\Parameter(
+     *         name="categoryId",
+     *         in="body",
+     *         format="uuid",
+     *         type="string",
+     *         description="ID of category",
+     *         @SWG\Schema(ref="#/definitions/Food"),
+     *     ),
+     *     @SWG\Response(response=201, description="Newly created Food", @SWG\Schema(ref="#/definitions/Food") ),
+     * )
      * @RequestParam(name="name", description="Food name")
      * @RequestParam(name="categoryId", strict=false, requirements=@Uuid, description="Category to assign")
      * @param ParamFetcher $params

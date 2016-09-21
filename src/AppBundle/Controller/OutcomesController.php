@@ -10,6 +10,7 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
+use Swagger\Annotations AS SWG;
 
 /**
  * Class OutcomesController.
@@ -30,6 +31,15 @@ class OutcomesController
         $this->doctrine = $doctrine;
     }
     /**
+     * @SWG\Get(
+     *     path="/products/outcomes/{outcomeId}",
+     *     description="Get Outcome by ID",
+     *     operationId="getOutcomeAction",
+     *     @SWG\Parameter(
+     *         name="outcomeId", format="uuid", type="string", required=true, in="path", description="ID of Outcome",
+     *     ),
+     *     @SWG\Response(response=200, description="Outcome", @SWG\Schema(ref="#/definitions/Outcome")),
+     * )
      * @param Outcome $outcome
      * @return \Symfony\Component\HttpFoundation\Response
      * @Get("/products/outcomes/{outcome}")
@@ -41,6 +51,15 @@ class OutcomesController
     }
 
     /**
+     * @SWG\Get(
+     *     path="/products/{productId}/outcomes",
+     *     description="Get outcomes by product",
+     *     operationId="getOutcomesAction",
+     *     @SWG\Parameter(
+     *         name="productId", format="uuid", type="string", required=true, in="path", description="ID of Product",
+     *     ),
+     *     @SWG\Response(response=200, description="List of Outcomes", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Outcome"))),
+     * )
      * @param Product $product
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
@@ -56,6 +75,45 @@ class OutcomesController
     }
 
     /**
+     * @SWG\Post(
+     *     path="/products/{productId}/outcomes",
+     *     operationId="postOutcomesAction",
+     *     description="Creates new outcome",
+     *     @SWG\Parameter(
+     *         name="productId", format="uuid", type="string", required=true, in="path", description="ID of Product",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="quantity",
+     *         type="float",
+     *         required=true,
+     *         in="body",
+     *         description="Quantity of outcome Product",
+     *         @SWG\Schema(ref="#/definitions/Outcome"),
+     *     ),
+     *     @SWG\Parameter(
+     *         name="outcomeAt",
+     *         type="dateTime",
+     *         required=true,
+     *         in="body",
+     *         @SWG\Schema(ref="#/definitions/Outcome"),
+     *     ),
+     *     @SWG\Parameter(
+     *         name="warehouseKeeper",
+     *         description="Person who gives the Product",
+     *         required=true,
+     *         in="body",
+     *         @SWG\Schema(ref="#/definitions/Outcome"),
+     *     ),
+     *     @SWG\Parameter(
+     *         name="cook",
+     *         description="Person who gets the Product",
+     *         required=true,
+     *         in="body",
+     *         @SWG\Schema(ref="#/definitions/Outcome"),
+     *     ),
+     *     @SWG\Response(response=201, description="Newly created Outcome", @SWG\Schema(ref="#/definitions/Outcome") ),
+     * )
+     *
      * @param Product $product
      * @param ParamFetcher $params
      *

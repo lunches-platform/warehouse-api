@@ -10,6 +10,7 @@ use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Swagger\Annotations AS SWG;
 
 /**
  * Class SuppliersController.
@@ -30,6 +31,19 @@ class SuppliersController
         $this->doctrine = $doctrine;
     }
     /**
+     * @SWG\Get(
+     *     path="/suppliers/{supplierId}",
+     *     description="Get Supplier by ID",
+     *     operationId="getSupplierAction",
+     *     @SWG\Parameter(
+     *         format="uuid", type="string", in="path", name="supplierId", required=true, description="ID of Supplier",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Supplier",
+     *         @SWG\Schema(ref="#/definitions/Supplier")
+     *     ),
+     * )
      * @param Supplier $supplier
      * @return \Symfony\Component\HttpFoundation\Response
      * @View
@@ -40,6 +54,12 @@ class SuppliersController
     }
 
     /**
+     * @SWG\Get(
+     *     path="/suppliers",
+     *     description="Get all suppliers registered",
+     *     operationId="getSuppliersAction",
+     *     @SWG\Response(response=200, description="List of Suppliers", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Supplier"))),
+     * )
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
      * @View
@@ -52,6 +72,20 @@ class SuppliersController
     }
 
     /**
+     * @SWG\Post(
+     *     path="/suppliers",
+     *     operationId="postSuppliersAction",
+     *     description="Creates new supplier",
+     *     @SWG\Parameter(
+     *         name="name",
+     *         in="body",
+     *         description="Supplier name",
+     *         required=true,
+     *         @SWG\Schema(ref="#/definitions/Supplier"),
+     *     ),
+     *     @SWG\Parameter(name="description", in="body", @SWG\Schema(ref="#/definitions/Supplier")),
+     *     @SWG\Response(response=201, description="Newly created Supplier", @SWG\Schema(ref="#/definitions/Supplier") ),
+     * )
      * @RequestParam(name="name")
      * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
