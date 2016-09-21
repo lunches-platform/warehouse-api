@@ -32,6 +32,15 @@ class ProductsController
         $this->doctrine = $doctrine;
     }
     /**
+     * @SWG\Get(
+     *     path="/products/{productId}",
+     *     description="Get Product by ID",
+     *     operationId="getProductAction",
+     *     @SWG\Parameter(
+     *         name="productId", format="uuid", type="string", required=true, in="path", description="ID of product",
+     *     ),
+     *     @SWG\Response(response=200, description="Product", @SWG\Schema(ref="#/definitions/Product")),
+     * )
      * @param Product $product
      * @return \Symfony\Component\HttpFoundation\Response
      * @View
@@ -42,6 +51,19 @@ class ProductsController
     }
 
     /**
+     * @SWG\Get(
+     *     path="/products",
+     *     description="Return products by filter conditions",
+     *     operationId="getProductsAction",
+     *     @SWG\Parameter(
+     *         name="like",
+     *         in="query",
+     *         description="Pattern of product name",
+     *         required=false,
+     *         type="string",
+     *     ),
+     *     @SWG\Response(response=200, description="List of Products", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Product"))),
+     * )
      * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
      * @QueryParam(name="like", description="Filter products by LIKE pattern")
@@ -58,6 +80,48 @@ class ProductsController
     }
 
     /**
+     * @SWG\Post(
+     *     path="/products",
+     *     operationId="postProductsAction",
+     *     description="Creates new product",
+     *     @SWG\Parameter(
+     *         name="name",
+     *         in="body",
+     *         required=true,
+     *         description="Product name",
+     *         required=true,
+     *         @SWG\Schema(ref="#/definitions/Product"),
+     *     ),
+     *     @SWG\Parameter(
+     *         name="foodId",
+     *         required=true,
+     *         in="body", format="uuid", type="string",
+     *         description="ID of Food",
+     *         @SWG\Schema(ref="#/definitions/Product"),
+     *     ),
+     *     @SWG\Parameter(
+     *         name="brandId",
+     *         required=true,
+     *         in="body", format="uuid", type="string",
+     *         description="ID of Brand",
+     *         @SWG\Schema(ref="#/definitions/Product"),
+     *     ),
+     *     @SWG\Parameter(
+     *         name="pcs",
+     *         required=true,
+     *         in="body", type="boolean",
+     *         description="Either Product distributes in pcs or no",
+     *         enum={"0","1"},
+     *         @SWG\Schema(ref="#/definitions/Product"),
+     *     ),
+     *     @SWG\Parameter(
+     *         name="wight",
+     *         in="body", type="integer",
+     *         description="Product weight in corresponding unit",
+     *         @SWG\Schema(ref="#/definitions/Product"),
+     *     ),
+     *     @SWG\Response(response=201, description="Newly created Product", @SWG\Schema(ref="#/definitions/Product") ),
+     * )
      * @RequestParam(name="foodId", requirements=@Uuid, description="Food of Product")
      * @RequestParam(name="name", description="Product name")
      * @RequestParam(name="brandId", requirements=@Uuid, description="Product brand")

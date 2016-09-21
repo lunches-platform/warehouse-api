@@ -56,6 +56,8 @@ class Product implements \JsonSerializable
      */
     protected $food;
     /**
+     * Either Product distributes in pcs or no
+     *
      * @var bool
      * @ORM\Column(type="boolean")
      * @SWG\Property()

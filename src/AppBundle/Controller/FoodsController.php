@@ -38,18 +38,9 @@ class FoodsController
      *     description="Get Food by ID",
      *     operationId="getFoodAction",
      *     @SWG\Parameter(
-     *         description="ID of food",
-     *         format="uuid",
-     *         type="string",
-     *         in="path",
-     *         name="foodId",
-     *         required=true,
+     *         name="foodId", format="uuid", type="string", required=true, in="path", description="ID of food",
      *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="Food",
-     *         @SWG\Schema(ref="#/definitions/Food")
-     *     ),
+     *     @SWG\Response(response=200, description="Food", @SWG\Schema(ref="#/definitions/Food")),
      * )
      * @param Food $food
      * @return \Symfony\Component\HttpFoundation\Response
