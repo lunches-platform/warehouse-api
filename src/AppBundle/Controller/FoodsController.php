@@ -13,6 +13,7 @@ use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Uuid;
+use Swagger\Annotations AS SWG;
 
 /**
  * Class FoodsController.

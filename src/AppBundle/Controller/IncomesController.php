@@ -15,6 +15,7 @@ use Money\Currency;
 use Money\Money;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Uuid;
+use Swagger\Annotations AS SWG;
 
 /**
  * Class IncomesController.
