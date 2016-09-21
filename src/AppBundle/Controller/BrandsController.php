@@ -10,6 +10,7 @@ use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Swagger\Annotations AS SWG;
 
 /**
  * Class BrandsController.
@@ -30,6 +31,24 @@ class BrandsController
         $this->doctrine = $doctrine;
     }
     /**
+     * @SWG\Get(
+     *     path="/brands/{brandId}",
+     *     description="Get Brand by ID",
+     *     operationId="getBrandAction",
+     *     @SWG\Parameter(
+     *         description="ID of Brand",
+     *         format="uuid",
+     *         type="string",
+     *         in="path",
+     *         name="brandId",
+     *         required=true,
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Brand",
+     *         @SWG\Schema(ref="#/definitions/Brand")
+     *     ),
+     * )
      * @param Brand $brand
      * @return \Symfony\Component\HttpFoundation\Response
      * @View
@@ -40,6 +59,12 @@ class BrandsController
     }
 
     /**
+     * @SWG\Get(
+     *     path="/brands",
+     *     description="Get all brands registered",
+     *     operationId="getBrandsAction",
+     *     @SWG\Response(response=200, description="List of Brands", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Brand"))),
+     * )
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \LogicException
      * @View
@@ -52,6 +77,20 @@ class BrandsController
     }
 
     /**
+     * @SWG\Post(
+     *     path="/brands",
+     *     operationId="postBrandsAction",
+     *     description="Creates new brand",
+     *     @SWG\Parameter(
+     *         name="name",
+     *         in="body",
+     *         description="Brand name",
+     *         required=true,
+     *         @SWG\Schema(ref="#/definitions/Brand"),
+     *     ),
+     *     @SWG\Parameter(name="description", in="body", @SWG\Schema(ref="#/definitions/Brand")),
+     *     @SWG\Response(response=201, description="Newly created Brand", @SWG\Schema(ref="#/definitions/Brand") ),
+     * )
      * @RequestParam(name="name")
      * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
