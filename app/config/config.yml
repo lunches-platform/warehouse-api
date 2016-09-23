@@ -94,10 +94,15 @@ fos_rest:
     routing_loader:
         default_format: json
         include_format: false # remove /resource/{id}.{_format} format part
+    format_listener:
+        enabled: true
+        rules:
+            - { path: '^/', priorities: ['json', 'html'], fallback_format: json, prefer_extension: false }
     exception:
         enabled: true
 #        exception_controller: 'Acme\DemoBundle\Controller\ExceptionController::showAction'
         codes:
+            'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': 404
             'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
             'InvalidArgumentException': 400
             'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
