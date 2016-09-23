@@ -3,11 +3,11 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\ValueObject\EntityName;
 use Ramsey\Uuid\Uuid;
 use Doctrine\ORM\Mapping AS ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Swagger\Annotations AS SWG;
-use Webmozart\Assert\Assert;
 
 /**
  * Class Brand.
@@ -25,9 +25,9 @@ class Brand implements \JsonSerializable
     protected $id;
 
     /**
-     * @var string
-     * @ORM\Column(type="string")
-     * @SWG\Property()
+     * @var EntityName
+     * @SWG\Property(type="string")
+     * @ORM\Embedded(class="\AppBundle\ValueObject\EntityName", columnPrefix=false)
      */
     protected $name;
 
@@ -50,21 +50,21 @@ class Brand implements \JsonSerializable
 
     /**
      * Brand constructor.
-     * @param string $name
+     * @param EntityName $name
      */
-    public function __construct($name)
+    public function __construct(EntityName $name)
     {
         $this->id = Uuid::uuid4();
-        $this->setName($name);
+        $this->name = $name;
         $this->createdAt = new \DateTimeImmutable();
     }
 
     /**
-     * @param string $name
+     * @param string $newName
      */
-    public function changeName($name)
+    public function changeName($newName)
     {
-        $this->setName($name);
+        $this->name = new EntityName($newName);
     }
 
     public function confirm()
@@ -89,23 +89,13 @@ class Brand implements \JsonSerializable
     }
 
     /**
-     * @param string $name
-     */
-    private function setName($name)
-    {
-        Assert::stringNotEmpty($name, 'Name is required');
-        Assert::range(mb_strlen($name), 3, 255);
-        $this->name = $name;
-    }
-
-    /**
      * @return array
      */
     public function jsonSerialize()
     {
         return [
             'id' => (string) $this->id,
-            'name' => $this->name,
+            'name' => (string) $this->name,
             'confirmed' => $this->confirmed,
         ];
     }

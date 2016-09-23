@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\ValueObject\EntityName;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Swagger\Annotations AS SWG;
@@ -24,9 +25,9 @@ class Product implements \JsonSerializable
      */
     protected $id;
     /**
-     * @var string
+     * @var EntityName
      * @ORM\Column(type="string")
-     * @SWG\Property()
+     * @ORM\Embedded(class="\AppBundle\ValueObject\EntityName", columnPrefix=false)
      */
     protected $name;
     /**
@@ -73,19 +74,19 @@ class Product implements \JsonSerializable
     /**
      * Product constructor.
      * @param Food $food
-     * @param string $name
+     * @param EntityName $name
      * @param Brand $brand
      * @param bool $pcs
      * @param int|null $weight
      * @throws \InvalidArgumentException
      */
-    public function __construct(Food $food, $name, Brand $brand, $pcs = true, $weight = null)
+    public function __construct(Food $food, EntityName $name, Brand $brand, $pcs = true, $weight = null)
     {
         $this->id = Uuid::uuid4();
         $this->food = $food;
         $this->brand = $brand;
         $this->createdAt = $this->updatedAt = new \DateTimeImmutable();
-        $this->setName($name);
+        $this->name = $name;
         $this->setPcsAndWeight($pcs, $weight);
     }
 
@@ -102,7 +103,7 @@ class Product implements \JsonSerializable
      */
     public function changeName($name)
     {
-        $this->setName($name);
+        $this->name = new EntityName($name);
     }
 
     /**
@@ -111,16 +112,6 @@ class Product implements \JsonSerializable
     public function id()
     {
         return $this->id;
-    }
-
-    /**
-     * @param string $name
-     */
-    private function setName($name)
-    {
-        Assert::stringNotEmpty($name, 'Name of the product is required');
-        Assert::range(mb_strlen($name), 3, 255, 'Name must be withing 3 and 255 characters length');
-        $this->name = $name;
     }
 
     /**
@@ -150,7 +141,7 @@ class Product implements \JsonSerializable
     {
         return [
             'id' => (string) $this->id,
-            'name' => $this->name,
+            'name' => (string) $this->name,
             'brand' => $this->brand,
             'food' => $this->food,
             'pcs' => $this->pcs,

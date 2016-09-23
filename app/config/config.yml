@@ -68,6 +68,11 @@ doctrine:
                         dir: "%kernel.root_dir%/../app/config/doctrine"
                         prefix: Money
                         alias: Money
+                    ValueObject:
+                        type: annotation
+                        prefix: AppBundle\ValueObject
+                        dir: "%kernel.root_dir%/../src/AppBundle/ValueObject"
+                        is_bundle: false
 
 stof_doctrine_extensions:
     default_locale: en_US

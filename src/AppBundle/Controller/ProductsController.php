@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Product;
+use AppBundle\ValueObject\EntityName;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
@@ -150,7 +151,7 @@ class ProductsController
         }
         $product = new Product(
             $food,
-            $params->get('name'),
+            new EntityName($params->get('name')),
             $brand,
             $params->get('pcs'),
             $params->get('weight')

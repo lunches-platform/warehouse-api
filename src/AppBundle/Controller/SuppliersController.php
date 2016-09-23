@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Supplier;
+use AppBundle\ValueObject\EntityName;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -97,10 +98,10 @@ class SuppliersController
     public function postSuppliersAction(ParamFetcher $params)
     {
         $name = $params->get('name');
-        if ($this->doctrine->getRepository('AppBundle:Supplier')->findOneBy(['name' => $name])) {
+        if ($this->doctrine->getRepository('AppBundle:Supplier')->findOneBy(['name.name' => $name])) {
             throw new HttpException(400, 'Supplier with specified name is exist already');
         }
-        $supplier = new Supplier($name);
+        $supplier = new Supplier(new EntityName($name));
 
         $em = $this->doctrine->getManager();
         $em->persist($supplier);

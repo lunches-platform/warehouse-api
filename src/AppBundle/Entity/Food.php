@@ -3,6 +3,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\ValueObject\EntityName;
 use Ramsey\Uuid\Uuid;
 use Doctrine\ORM\Mapping AS ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -25,8 +26,8 @@ class Food implements \JsonSerializable
     protected $id;
 
     /**
-     * @var string
-     * @ORM\Column(type="string")
+     * @var EntityName
+     * @ORM\Embedded(class="\AppBundle\ValueObject\EntityName", columnPrefix=false)
      * @SWG\Property()
      */
     protected $name;
@@ -56,12 +57,12 @@ class Food implements \JsonSerializable
 
     /**
      * Food constructor.
-     * @param string $name
+     * @param EntityName $name
      */
-    public function __construct($name)
+    public function __construct(EntityName $name)
     {
         $this->id = Uuid::uuid4();
-        $this->setName($name);
+        $this->name = $name;
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -80,7 +81,7 @@ class Food implements \JsonSerializable
      */
     public function changeName($name)
     {
-        $this->setName($name);
+        $this->name = new EntityName($name);
     }
 
     /**
@@ -92,23 +93,13 @@ class Food implements \JsonSerializable
     }
 
     /**
-     * @param string $name
-     */
-    private function setName($name)
-    {
-        Assert::stringNotEmpty($name, 'Name of the Food is required');
-        Assert::range(mb_strlen($name), 3, 255);
-        $this->name = $name;
-    }
-
-    /**
      * @return array
      */
     public function jsonSerialize()
     {
         return [
             'id' => (string) $this->id,
-            'name' => $this->name,
+            'name' => (string) $this->name,
             'category' => null === $this->category ? null : $this->category->name(),
         ];
     }

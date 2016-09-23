@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Category;
+use AppBundle\ValueObject\EntityName;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -123,12 +124,12 @@ class CategoriesController
     public function postCategoriesAction(ParamFetcher $params)
     {
         if ($this->doctrine->getRepository('AppBundle:Category')->findOneBy([
-            'name' => $name = $params->get('name'),
+            'name.name' => $name = $params->get('name'),
             'type' => $type = $params->get('type'),
         ])) {
             throw new HttpException(400, 'Such category is exist already');
         }
-        $category = new Category($name, $type, $params->get('unit'), $params->get('description'));
+        $category = new Category(new EntityName($name), $type, $params->get('unit'), $params->get('description'));
 
         $em = $this->doctrine->getManager();
         $em->persist($category);
