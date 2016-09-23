@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Brand;
+use AppBundle\ValueObject\EntityName;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -102,10 +103,10 @@ class BrandsController
     public function postBrandsAction(ParamFetcher $params)
     {
         $name = $params->get('name');
-        if ($this->doctrine->getRepository('AppBundle:Brand')->findOneBy(['name' => $name])) {
+        if ($this->doctrine->getRepository('AppBundle:Brand')->findOneBy(['name.name' => $name])) {
             throw new HttpException(400, 'Brand with specified name is exist already');
         }
-        $brand = new Brand($name);
+        $brand = new Brand(new EntityName($name));
 
         $em = $this->doctrine->getManager();
         $em->persist($brand);
