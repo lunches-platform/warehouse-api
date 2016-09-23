@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Food;
+use AppBundle\ValueObject\EntityName;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
@@ -111,11 +112,11 @@ class FoodsController
     public function postFoodsAction(ParamFetcher $params)
     {
         $name = $params->get('name');
-        if ($this->doctrine->getRepository('AppBundle:Food')->findOneBy(['name' => $name])) {
+        if ($this->doctrine->getRepository('AppBundle:Food')->findOneBy(['name.name' => $name])) {
             throw new HttpException(400, 'Food with specified name is exist already');
         }
 
-        $food = new Food($name);
+        $food = new Food(new EntityName($name));
         if ($categoryId = $params->get('categoryId')) {
             $category = $this->doctrine->getRepository('AppBundle:Category')->find($categoryId);
             if (!$category) {
@@ -127,24 +128,6 @@ class FoodsController
         $em = $this->doctrine->getManager();
         $em->persist($food);
         $em->flush();
-
-        return $food;
-    }
-
-    /**
-     * @RequestParam(name="name", description="Food name")
-     * @param Food $food
-     * @param ParamFetcher $params
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \LogicException
-     * @View
-     */
-    public function putFoodAction(Food $food, ParamFetcher $params)
-    {
-        if ($name = $params->get('name')) {
-            $food->changeName($name);
-        }
-        $this->doctrine->getManager()->flush();
 
         return $food;
     }

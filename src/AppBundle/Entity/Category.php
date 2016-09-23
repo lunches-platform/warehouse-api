@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\ValueObject\EntityName;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Swagger\Annotations AS SWG;
@@ -23,9 +24,8 @@ class Category implements \JsonSerializable
      */
     protected $id;
     /**
-     * @var string
-     * @ORM\Column(type="string")
-     * @SWG\Property()
+     * @var EntityName
+     * @ORM\Embedded(class="\AppBundle\ValueObject\EntityName", columnPrefix=false)
      */
     protected $name;
     /**
@@ -64,30 +64,20 @@ class Category implements \JsonSerializable
 
     /**
      * Category constructor.
-     * @param string $name
+     * @param EntityName $name
      * @param string $type
      * @param string $unit
      * @param string|null $description
      */
-    public function __construct($name, $type, $unit, $description = null)
+    public function __construct(EntityName $name, $type, $unit, $description = null)
     {
         $this->id = Uuid::uuid4();
-        $this->setName($name);
+        $this->name = $name;
         $this->setType($type);
         $this->setUnit($unit);
         $this->setDescription($description);
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
-    }
-
-    /**
-     * @param string $name
-     */
-    private function setName($name)
-    {
-        Assert::stringNotEmpty($name, 'Name is required');
-        Assert::range(mb_strlen($name), 3, 255);
-        $this->name = $name;
     }
 
     /**
@@ -127,7 +117,7 @@ class Category implements \JsonSerializable
     {
         return [
             'id' => (string) $this->id,
-            'name' => $this->name,
+            'name' => (string) $this->name,
             'unit' => $this->unit,
             'type' => $this->type,
             'description' => $this->description,

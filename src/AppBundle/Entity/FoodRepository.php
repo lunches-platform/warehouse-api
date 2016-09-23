@@ -15,7 +15,7 @@ class FoodRepository extends EntityRepository
      */
     public function findByNameLike($like)
     {
-        $dql = 'SELECT f FROM AppBundle\Entity\Food f WHERE f.name LIKE :like';
+        $dql = 'SELECT f FROM AppBundle\Entity\Food f WHERE f.name.name LIKE :like';
 
         return $this->_em->createQuery($dql)->setParameter('like', '%'.$like.'%')->getResult();
     }
