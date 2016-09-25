@@ -97,7 +97,8 @@ fos_rest:
     format_listener:
         enabled: true
         rules:
-            - { path: '^/', priorities: ['json', 'html'], fallback_format: json, prefer_extension: false }
+            - { path: '^/', fallback_format: json, prefer_extension: false }
+#            - { path: '^/', priorities: ['json','html'], fallback_format: json, prefer_extension: false }
     exception:
         enabled: true
 #        exception_controller: 'Acme\DemoBundle\Controller\ExceptionController::showAction'
@@ -108,7 +109,6 @@ fos_rest:
             'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
             'Doctrine\ORM\ORMException': 400
         messages:
-            'InvalidArgumentException': true
             'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': true
     body_converter:
         enabled: true
