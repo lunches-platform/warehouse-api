@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Product;
+use AppBundle\Exception\EntityNotFoundException;
 use AppBundle\Service\CreateProduct;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
@@ -130,13 +131,8 @@ class ProductsController
      * @RequestParam(name="weight", requirements="\d+",  strict=false, description="Product weight in corresponding unit")
      *
      * @param ParamFetcher $params
-     *
      * @return Product
-     * @throws \DomainException
-     * @throws \InvalidArgumentException
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @throws \LogicException
-     *
+     * @throws \Exception
      * @View(statusCode=201)
      */
     public function postProductsAction(ParamFetcher $params)
@@ -147,8 +143,11 @@ class ProductsController
         );
         try {
             $product = $createProduct->execute($params);
-        } catch (\InvalidArgumentException $e) {
-            throw new \DomainException($e->getMessage(), $e->getCode(), $e);
+        } catch (\Exception $e) {
+            if ($e instanceof \InvalidArgumentException || $e instanceof EntityNotFoundException) {
+                throw new \DomainException($e->getMessage(), $e->getCode(), $e);
+            }
+            throw $e;
         }
 
         $em = $this->doctrine->getManager();
