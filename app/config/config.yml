@@ -108,8 +108,11 @@ fos_rest:
             'InvalidArgumentException': 400
             'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
             'Doctrine\ORM\ORMException': 400
+            'DomainException': 400
         messages:
+            'DomainException': true
             'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': true
+            'FOS\RestBundle\Exception\InvalidParameterException': true
     body_converter:
         enabled: true
 

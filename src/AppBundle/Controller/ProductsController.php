@@ -5,13 +5,12 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Product;
-use AppBundle\ValueObject\EntityName;
+use AppBundle\Service\CreateProduct;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Uuid;
 use Swagger\Annotations AS SWG;
 
@@ -33,6 +32,7 @@ class ProductsController
     {
         $this->doctrine = $doctrine;
     }
+
     /**
      * @SWG\Get(
      *     path="/products/{productId}",
@@ -44,8 +44,8 @@ class ProductsController
      *     @SWG\Response(response=200, description="Product", @SWG\Schema(ref="#/definitions/Product")),
      * )
      * @param Product $product
-     * @return \Symfony\Component\HttpFoundation\Response
      * @View
+     * @return Product
      */
     public function getProductAction(Product $product)
     {
@@ -128,11 +128,11 @@ class ProductsController
      * @RequestParam(name="brandId", requirements=@Uuid, description="Product brand")
      * @RequestParam(name="pcs", requirements="(0|1)", description="Either Product distributes in pcs or no")
      * @RequestParam(name="weight", requirements="\d+",  strict=false, description="Product weight in corresponding unit")
-     * 
+     *
      * @param ParamFetcher $params
-     * 
-     * @return \Symfony\Component\HttpFoundation\Response
-     * 
+     *
+     * @return Product
+     * @throws \DomainException
      * @throws \InvalidArgumentException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @throws \LogicException
@@ -141,21 +141,15 @@ class ProductsController
      */
     public function postProductsAction(ParamFetcher $params)
     {
-        $food = $this->doctrine->getRepository('AppBundle:Food')->find($params->get('foodId'));
-        if (!$food) {
-            throw new NotFoundHttpException('Food not found');
-        }
-        $brand = $this->doctrine->getRepository('AppBundle:Brand')->find($params->get('brandId'));
-        if (!$brand) {
-            throw new NotFoundHttpException('Brand not found');
-        }
-        $product = new Product(
-            $food,
-            new EntityName($params->get('name')),
-            $brand,
-            $params->get('pcs'),
-            $params->get('weight')
+        $createProduct = new CreateProduct(
+            $this->doctrine->getRepository('AppBundle:Food'),
+            $this->doctrine->getRepository('AppBundle:Brand')
         );
+        try {
+            $product = $createProduct->execute($params);
+        } catch (\InvalidArgumentException $e) {
+            throw new \DomainException($e->getMessage(), $e->getCode(), $e);
+        }
 
         $em = $this->doctrine->getManager();
         $em->persist($product);
