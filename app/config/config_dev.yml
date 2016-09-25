@@ -7,10 +7,6 @@ framework:
         strict_requirements: true
     profiler: { only_exceptions: false }
 
-web_profiler:
-    toolbar: true
-    intercept_redirects: false
-
 monolog:
     handlers:
         main:
@@ -21,6 +17,6 @@ monolog:
         console:
             type:   console
             channels: [!event, !doctrine]
-        #chromephp:
-        #    type:   chromephp
-        #    level:  info
+        chromephp:
+            type:   chromephp
+            level:  info
