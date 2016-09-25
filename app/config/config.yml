@@ -28,6 +28,7 @@ framework:
     serializer:
         enabled: true
         enable_annotations: true
+        cache: serializer.mapping.cache.apc
 
 sensio_framework_extra:
     request: { converters: true }
@@ -107,6 +108,9 @@ fos_rest:
             'InvalidArgumentException': 400
             'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
             'Doctrine\ORM\ORMException': 400
+        messages:
+            'InvalidArgumentException': true
+            'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': true
     body_converter:
         enabled: true
 
