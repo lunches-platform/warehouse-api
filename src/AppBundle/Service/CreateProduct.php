@@ -8,7 +8,7 @@ use AppBundle\Entity\BrandRepository;
 use AppBundle\Entity\FoodRepository;
 use AppBundle\Entity\Product;
 use AppBundle\ValueObject\EntityName;
-use FOS\RestBundle\Request\ParamFetcher;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class CreateProduct.
@@ -36,19 +36,24 @@ class CreateProduct
     }
 
     /**
-     * @param ParamFetcher $params
+     * @param Uuid $foodId
+     * @param string $name
+     * @param Uuid $brandId
+     * @param bool $pcs
+     * @param int $weight
+     *
      * @return Product
      * @throws \AppBundle\Exception\EntityNotFoundException
      * @throws \InvalidArgumentException
      */
-    public function execute(ParamFetcher $params)
+    public function execute($foodId, $name, $brandId, $pcs, $weight)
     {
         $product = new Product(
-            $this->foodRepo->get($params->get('foodId')),
-            new EntityName($params->get('name')),
-            $this->brandRepo->get($params->get('brandId')),
-            $params->get('pcs'),
-            $params->get('weight')
+            $this->foodRepo->get($foodId),
+            new EntityName($name),
+            $this->brandRepo->get($brandId),
+            $pcs,
+            $weight
         );
 
         return $product;

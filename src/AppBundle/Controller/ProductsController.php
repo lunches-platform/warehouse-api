@@ -142,7 +142,13 @@ class ProductsController
             $this->doctrine->getRepository('AppBundle:Brand')
         );
         try {
-            $product = $createProduct->execute($params);
+            $product = $createProduct->execute(
+                $params->get('foodId'),
+                $params->get('name'),
+                $params->get('brandId'),
+                $params->get('pcs'),
+                $params->get('weight')
+            );
         } catch (\Exception $e) {
             if ($e instanceof \InvalidArgumentException || $e instanceof EntityNotFoundException) {
                 throw new \DomainException($e->getMessage(), $e->getCode(), $e);
