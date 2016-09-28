@@ -71,7 +71,7 @@ class Category implements \JsonSerializable
      */
     public function __construct(EntityName $name, $type, $unit, $description = null)
     {
-        $this->id = Uuid::uuid4();
+        $this->id = Uuid::uuid4()->toString();
         $this->name = $name;
         $this->setType($type);
         $this->setUnit($unit);
@@ -127,8 +127,24 @@ class Category implements \JsonSerializable
     /**
      * @return string
      */
+    public function id()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
     public function name()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function type()
+    {
+        return $this->type;
     }
 }

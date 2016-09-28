@@ -80,7 +80,7 @@ class Outcome implements \JsonSerializable
         \DateTimeImmutable $outcomeAt = null
     )
     {
-        $this->id = Uuid::uuid4();
+        $this->id = Uuid::uuid4()->toString();
         $this->product = $product;
         $this->createdAt = new \DateTimeImmutable();
         $this->setOutcomeAt($outcomeAt);

@@ -4,15 +4,19 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\CsvFoodsImporter;
 use AppBundle\Entity\Food;
-use AppBundle\ValueObject\EntityName;
+use AppBundle\Exception\EntityNotFoundException;
+use AppBundle\Service\CreateFood;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Uuid;
 use Swagger\Annotations AS SWG;
 
@@ -45,7 +49,7 @@ class FoodsController
      *     @SWG\Response(response=200, description="Food", @SWG\Schema(ref="#/definitions/Food")),
      * )
      * @param Food $food
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Food
      * @View
      */
     public function getFoodAction(Food $food)
@@ -102,27 +106,26 @@ class FoodsController
      * @RequestParam(name="name", description="Food name")
      * @RequestParam(name="categoryId", strict=false, requirements=@Uuid, description="Category to assign")
      * @param ParamFetcher $params
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
+     * @return Food
+     * @throws \Exception
      * @View(statusCode=201);
      */
     public function postFoodsAction(ParamFetcher $params)
     {
-        $name = $params->get('name');
-        if ($this->doctrine->getRepository('AppBundle:Food')->findOneBy(['name.name' => $name])) {
-            throw new HttpException(400, 'Food with specified name is exist already');
-        }
-
-        $food = new Food(new EntityName($name));
-        if ($categoryId = $params->get('categoryId')) {
-            $category = $this->doctrine->getRepository('AppBundle:Category')->find($categoryId);
-            if (!$category) {
-                throw new NotFoundHttpException('Category not found');
+        $createFood = new CreateFood(
+            $this->doctrine->getRepository('AppBundle:Food'),
+            $this->doctrine->getRepository('AppBundle:Category')
+        );
+        try {
+            $food = $createFood->execute(
+                $params->get('name'),
+                $params->get('categoryId')
+            );
+        } catch (\Exception $e) {
+            if ($e instanceof \InvalidArgumentException || $e instanceof EntityNotFoundException) {
+                throw new \DomainException($e->getMessage(), $e->getCode(), $e);
             }
-            $food->assignCategory($category);
+            throw $e;
         }
 
         $em = $this->doctrine->getManager();
@@ -130,5 +133,62 @@ class FoodsController
         $em->flush();
 
         return $food;
+    }
+
+    /**
+     * @SWG\Post(
+     *     path="/foods/import-csv",
+     *     operationId="importCsvAction",
+     *     description="Allows to import several foods via CSV format",
+     *     @SWG\Parameter(
+     *         name="delimiter",
+     *         description="Symbol which separates one column from another",
+     *         enum={";",",","\t"},
+     *         in="formData",
+     *         default=";",
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="skipRows",
+     *         type="integer",
+     *         in="formData",
+     *         description="Count number of rows skip from the beggining of the file",
+     *         default="0",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="file",
+     *         in="formData",
+     *         type="file",
+     *         description="File to import",
+     *         required=true
+     *     ),
+     *     @SWG\Response(response=201, description="Newly created Food", @SWG\Schema(ref="#/definitions/Food") ),
+     * )
+     * @Post("/foods/import-csv")
+     * @RequestParam(name="delimiter", strict=false, requirements="(;|,|\t)", default=";", description="Symbol which separates one column from another")
+     * @RequestParam(name="skipRows", strict=false, requirements="\d+", default="0", description="Count number of rows skip from the beggining of the file")
+     * @RequestParam(name="file", description="File to import")
+     * @param ParamFetcher $params
+     * @param Request $request
+     * @return array []
+     * @throws \Ddeboer\DataImport\Exception\DuplicateHeadersException
+     * @throws \InvalidArgumentException
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws \Exception
+     * @View
+     */
+    public function postImportCsvAction(ParamFetcher $params, Request $request)
+    {
+        $delimiter = $params->get('delimiter');
+        $skipRows = $params->get('skipRows');
+
+        $file = $request->files->get('file');
+        if (!$file instanceof UploadedFile) {
+            throw new HttpException(400, 'File not provided or it has invalid format');
+        }
+
+        $importer = new CsvFoodsImporter($this->doctrine, $delimiter, $skipRows);
+
+        return $importer->import($file->getRealPath());
     }
 }

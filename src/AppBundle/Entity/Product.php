@@ -82,7 +82,7 @@ class Product implements \JsonSerializable
      */
     public function __construct(Food $food, EntityName $name, Brand $brand, $pcs = true, $weight = null)
     {
-        $this->id = Uuid::uuid4();
+        $this->id = Uuid::uuid4()->toString();
         $this->food = $food;
         $this->brand = $brand;
         $this->createdAt = $this->updatedAt = new \DateTimeImmutable();

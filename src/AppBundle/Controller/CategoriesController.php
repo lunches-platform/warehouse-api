@@ -5,12 +5,12 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Category;
-use AppBundle\ValueObject\EntityName;
+use AppBundle\Exception\DuplicateEntityException;
+use AppBundle\Service\CreateCategory;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Swagger\Annotations AS SWG;
 
 /**
@@ -111,25 +111,30 @@ class CategoriesController
      * @RequestParam(name="type")
      * @RequestParam(name="unit", requirements="(ml|gr)")
      * @RequestParam(name="description", strict=false)
-     * 
+     *
      * @param ParamFetcher $params
-     * @return \Symfony\Component\HttpFoundation\Response
-     * 
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
-     * 
+     * @return Category
+     * @throws \Exception
      * @View(statusCode=201);
      */
     public function postCategoriesAction(ParamFetcher $params)
     {
-        if ($this->doctrine->getRepository('AppBundle:Category')->findOneBy([
-            'name.name' => $name = $params->get('name'),
-            'type' => $type = $params->get('type'),
-        ])) {
-            throw new HttpException(400, 'Such category is exist already');
+        $createCategory = new CreateCategory(
+            $this->doctrine->getRepository('AppBundle:Category')
+        );
+        try {
+            $category = $createCategory->execute(
+                $params->get('name'),
+                $params->get('type'),
+                $params->get('unit'),
+                $params->get('description')
+            );
+        } catch (\Exception $e) {
+            if ($e instanceof \InvalidArgumentException || $e instanceof DuplicateEntityException) {
+                throw new \DomainException($e->getMessage(), 400, $e);
+            }
+            throw $e;
         }
-        $category = new Category(new EntityName($name), $type, $params->get('unit'), $params->get('description'));
 
         $em = $this->doctrine->getManager();
         $em->persist($category);
