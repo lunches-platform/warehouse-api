@@ -131,4 +131,12 @@ class Category implements \JsonSerializable
     {
         return $this->name;
     }
+
+    /**
+     * @return string
+     */
+    public function type()
+    {
+        return $this->type;
+    }
 }
