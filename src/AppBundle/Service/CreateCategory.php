@@ -8,10 +8,8 @@ use AppBundle\Entity\BrandRepository;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\CategoryRepository;
 use AppBundle\Entity\FoodRepository;
-use AppBundle\Entity\Product;
 use AppBundle\Exception\DuplicateEntityException;
 use AppBundle\ValueObject\EntityName;
-use FOS\RestBundle\Request\ParamFetcher;
 
 /**
  * Class CreateCategory.
@@ -44,7 +42,7 @@ class CreateCategory
      * @return Category
      * @throws \AppBundle\Exception\DuplicateEntityException
      */
-    public function execute($name, $type, $unit, $description)
+    public function execute($name, $type, $unit, $description = '')
     {
         $category = new Category(new EntityName($name), $type, $unit, $description);
 

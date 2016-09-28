@@ -15,9 +15,25 @@ class CategoryRepository extends EntityRepository
      */
     public function exists(Category $category)
     {
-        return (bool) $this->findOneBy([
-            'name.name' => $category->name(),
-            'type' => $category->type(),
+        return (bool) $this->findByNameAndType(
+            $category->name(),
+            $category->type()
+        );
+    }
+
+    /**
+     * @param string $name
+     * @param string $type
+     * @return Category
+     */
+    public function findByNameAndType($name, $type)
+    {
+        /** @var Category $category */
+        $category = $this->findOneBy([
+            'name.name' => $name,
+            'type' => $type,
         ]);
+
+        return $category;
     }
 }
