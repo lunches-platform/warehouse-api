@@ -4,14 +4,19 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\CsvFoodsImporter;
 use AppBundle\Entity\Food;
 use AppBundle\Exception\EntityNotFoundException;
 use AppBundle\Service\CreateFood;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Constraints\Uuid;
 use Swagger\Annotations AS SWG;
 
@@ -128,5 +133,62 @@ class FoodsController
         $em->flush();
 
         return $food;
+    }
+
+    /**
+     * @SWG\Post(
+     *     path="/foods/import-csv",
+     *     operationId="importCsvAction",
+     *     description="Allows to import several foods via CSV format",
+     *     @SWG\Parameter(
+     *         name="delimiter",
+     *         description="Symbol which separates one column from another",
+     *         enum={";",",","\t"},
+     *         in="formData",
+     *         default=";",
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="skipRows",
+     *         type="integer",
+     *         in="formData",
+     *         description="Count number of rows skip from the beggining of the file",
+     *         default="0",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="file",
+     *         in="formData",
+     *         type="file",
+     *         description="File to import",
+     *         required=true
+     *     ),
+     *     @SWG\Response(response=201, description="Newly created Food", @SWG\Schema(ref="#/definitions/Food") ),
+     * )
+     * @Post("/foods/import-csv")
+     * @RequestParam(name="delimiter", strict=false, requirements="(;|,|\t)", default=";", description="Symbol which separates one column from another")
+     * @RequestParam(name="skipRows", strict=false, requirements="\d+", default="0", description="Count number of rows skip from the beggining of the file")
+     * @RequestParam(name="file", description="File to import")
+     * @param ParamFetcher $params
+     * @param Request $request
+     * @return array []
+     * @throws \Ddeboer\DataImport\Exception\DuplicateHeadersException
+     * @throws \InvalidArgumentException
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @throws \Exception
+     * @View
+     */
+    public function postImportCsvAction(ParamFetcher $params, Request $request)
+    {
+        $delimiter = $params->get('delimiter');
+        $skipRows = $params->get('skipRows');
+
+        $file = $request->files->get('file');
+        if (!$file instanceof UploadedFile) {
+            throw new HttpException(400, 'File not provided or it has invalid format');
+        }
+
+        $importer = new CsvFoodsImporter($this->doctrine, $delimiter, $skipRows);
+
+        return $importer->import($file->getRealPath());
     }
 }
