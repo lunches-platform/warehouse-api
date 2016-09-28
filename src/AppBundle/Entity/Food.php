@@ -61,7 +61,7 @@ class Food implements \JsonSerializable
      */
     public function __construct(EntityName $name)
     {
-        $this->id = Uuid::uuid4();
+        $this->id = Uuid::uuid4()->toString();
         $this->name = $name;
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();

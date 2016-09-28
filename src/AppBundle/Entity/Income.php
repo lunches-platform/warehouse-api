@@ -107,7 +107,7 @@ class Income implements JsonSerializable
         \DateTimeImmutable $purchasedAt = null
     )
     {
-        $this->id = Uuid::uuid4();
+        $this->id = Uuid::uuid4()->toString();
         $this->product = $product;
         $this->supplier = $supplier;
         $this->createdAt = new \DateTimeImmutable();
