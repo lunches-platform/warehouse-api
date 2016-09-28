@@ -93,6 +93,14 @@ class Food implements \JsonSerializable
     }
 
     /**
+     * @return EntityName
+     */
+    public function name()
+    {
+        return $this->name;
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize()

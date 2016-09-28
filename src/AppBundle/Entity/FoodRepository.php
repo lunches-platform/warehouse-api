@@ -36,4 +36,21 @@ class FoodRepository extends EntityRepository
 
         return $food;
     }
+    /**
+     * @param Food $food
+     * @return bool
+     */
+    public function exists(Food $food)
+    {
+        return (bool) $this->findByName($food->name());
+    }
+
+    /**
+     * @param string $name
+     * @return Food
+     */
+    public function findByName($name)
+    {
+        return $this->findOneBy(['name.name' => $name]);
+    }
 }

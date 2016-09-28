@@ -5,14 +5,13 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Food;
-use AppBundle\ValueObject\EntityName;
+use AppBundle\Exception\EntityNotFoundException;
+use AppBundle\Service\CreateFood;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\Constraints\Uuid;
 use Swagger\Annotations AS SWG;
 
@@ -45,7 +44,7 @@ class FoodsController
      *     @SWG\Response(response=200, description="Food", @SWG\Schema(ref="#/definitions/Food")),
      * )
      * @param Food $food
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Food
      * @View
      */
     public function getFoodAction(Food $food)
@@ -102,27 +101,26 @@ class FoodsController
      * @RequestParam(name="name", description="Food name")
      * @RequestParam(name="categoryId", strict=false, requirements=@Uuid, description="Category to assign")
      * @param ParamFetcher $params
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
+     * @return Food
+     * @throws \Exception
      * @View(statusCode=201);
      */
     public function postFoodsAction(ParamFetcher $params)
     {
-        $name = $params->get('name');
-        if ($this->doctrine->getRepository('AppBundle:Food')->findOneBy(['name.name' => $name])) {
-            throw new HttpException(400, 'Food with specified name is exist already');
-        }
-
-        $food = new Food(new EntityName($name));
-        if ($categoryId = $params->get('categoryId')) {
-            $category = $this->doctrine->getRepository('AppBundle:Category')->find($categoryId);
-            if (!$category) {
-                throw new NotFoundHttpException('Category not found');
+        $createFood = new CreateFood(
+            $this->doctrine->getRepository('AppBundle:Food'),
+            $this->doctrine->getRepository('AppBundle:Category')
+        );
+        try {
+            $food = $createFood->execute(
+                $params->get('name'),
+                $params->get('categoryId')
+            );
+        } catch (\Exception $e) {
+            if ($e instanceof \InvalidArgumentException || $e instanceof EntityNotFoundException) {
+                throw new \DomainException($e->getMessage(), $e->getCode(), $e);
             }
-            $food->assignCategory($category);
+            throw $e;
         }
 
         $em = $this->doctrine->getManager();
