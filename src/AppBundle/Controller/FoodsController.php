@@ -60,8 +60,14 @@ class FoodsController
     /**
      * @SWG\Get(
      *     path="/foods",
-     *     description="Return all foods registered",
+     *     description="Return foods by filters",
      *     operationId="getFoodsAction",
+     *     @SWG\Parameter(
+     *         description="Filter foods by LIKE pattern",
+     *         type="string",
+     *         in="query",
+     *         name="like",
+     *     ),
      *     @SWG\Response(response=200, description="List of Foods", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Food"))),
      * )
      * @param ParamFetcher $params

@@ -7,6 +7,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Brand;
 use AppBundle\ValueObject\EntityName;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
@@ -51,7 +52,7 @@ class BrandsController
      *     ),
      * )
      * @param Brand $brand
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Brand
      * @View
      */
     public function getBrandAction(Brand $brand)
@@ -64,17 +65,28 @@ class BrandsController
      *     path="/brands",
      *     description="Get all brands registered",
      *     operationId="getBrandsAction",
+     *     @SWG\Parameter(
+     *         description="Filter brands by LIKE pattern",
+     *         type="string",
+     *         in="query",
+     *         name="like",
+     *     ),
      *     @SWG\Response(response=200, description="List of Brands", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Brand"))),
      * )
+     * @QueryParam(name="like", description="Filter brands by LIKE pattern")
+     * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \LogicException
      * @View
      */
-    public function getBrandsAction()
+    public function getBrandsAction(ParamFetcher $params)
     {
         $repo = $this->doctrine->getRepository('AppBundle:Brand');
 
-        return $repo->findAll();
+        if ($like = $params->get('like')) {
+            return $repo->findByNameLike($like);
+        } else {
+            return $repo->findAll();
+        }
     }
 
     /**
@@ -94,7 +106,7 @@ class BrandsController
      * )
      * @RequestParam(name="name")
      * @param ParamFetcher $params
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Brand
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      * @throws \LogicException
      * @throws \InvalidArgumentException
