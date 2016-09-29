@@ -16,6 +16,7 @@ use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Constraints\Uuid;
 use Swagger\Annotations AS SWG;
@@ -196,5 +197,32 @@ class FoodsController
         $importer = new CsvFoodsImporter($this->doctrine, $delimiter, $skipRows);
 
         return $importer->import($file->getRealPath());
+    }
+
+    /**
+     * @SWG\Put(
+     *     path="/foods/{foodId}/aliases/{alias}",
+     *     operationId="postFoodAliasesAction",
+     *     description="Adds alias for food",
+     *     @SWG\Parameter(
+     *         name="foodId", format="uuid", type="string", required=true, in="path", description="ID of Food",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="alias", description="", required=true, in="path",
+     *     ),
+     *     @SWG\Response(response=204)
+     * )
+     * @param Food $food
+     * @param string $alias
+     * @return Response
+     * @throws \InvalidArgumentException
+     * @RequestParam(name="name", description="Food Alias name")
+     */
+    public function putFoodAliasAction(Food $food, $alias)
+    {
+        $food->addAlias($alias);
+        $this->doctrine->getManager()->flush();
+
+        return new Response();
     }
 }
