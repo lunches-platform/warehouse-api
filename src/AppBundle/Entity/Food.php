@@ -73,6 +73,7 @@ class Food implements \JsonSerializable
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
         $this->aliases = new ArrayCollection();
+        $this->addAlias($name);
     }
 
     /**
@@ -80,7 +81,7 @@ class Food implements \JsonSerializable
      */
     public function addAlias($alias)
     {
-        $name = new EntityName($alias);
+        $name = $alias instanceof EntityName ? $alias : new EntityName($alias);
         $foodAlias = new FoodAlias($this, $name);
 
         if (!$this->aliases->exists(function($key, FoodAlias $alias) use ($foodAlias) {
