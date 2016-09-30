@@ -25,4 +25,14 @@ class BrandRepository extends EntityRepository
 
         return $brand;
     }
+    /**
+     * @param string $like
+     * @return array
+     */
+    public function findByNameLike($like)
+    {
+        $dql = 'SELECT b FROM AppBundle\Entity\Brand b WHERE b.name.name LIKE :like';
+
+        return $this->_em->createQuery($dql)->setParameter('like', '%'.$like.'%')->getResult();
+    }
 }

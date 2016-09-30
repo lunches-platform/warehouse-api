@@ -4,6 +4,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\ValueObject\EntityName;
+use Doctrine\Common\Collections\ArrayCollection;
 use Ramsey\Uuid\Uuid;
 use Doctrine\ORM\Mapping AS ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -56,6 +57,12 @@ class Food implements \JsonSerializable
     protected $category;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\FoodAlias", mappedBy="food", cascade={"persist"})
+     */
+    protected $aliases;
+
+    /**
      * Food constructor.
      * @param EntityName $name
      */
@@ -65,6 +72,23 @@ class Food implements \JsonSerializable
         $this->name = $name;
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
+        $this->aliases = new ArrayCollection();
+        $this->addAlias($name);
+    }
+
+    /**
+     * @param string $alias
+     */
+    public function addAlias($alias)
+    {
+        $name = $alias instanceof EntityName ? $alias : new EntityName($alias);
+        $foodAlias = new FoodAlias($this, $name);
+
+        if (!$this->aliases->exists(function($key, FoodAlias $alias) use ($foodAlias) {
+            return $alias->equals($foodAlias) && isset($key);
+        })) {
+            $this->aliases[] = $foodAlias;
+        }
     }
 
     /**
@@ -109,6 +133,9 @@ class Food implements \JsonSerializable
             'id' => (string) $this->id,
             'name' => (string) $this->name,
             'category' => null === $this->category ? null : $this->category->name(),
+            'aliases' => $this->aliases->map(function(FoodAlias $alias) {
+                return $alias->jsonSerialize();
+            }),
         ];
     }
 }
