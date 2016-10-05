@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\CsvFoodsImporter;
+use AppBundle\Entity\Category;
 use AppBundle\Entity\Food;
 use AppBundle\Exception\EntityNotFoundException;
 use AppBundle\Service\CreateFood;
@@ -224,5 +225,26 @@ class FoodsController
         $this->doctrine->getManager()->flush();
 
         return new Response();
+    }
+    /**
+     * @SWG\Get(
+     *     path="/categories/{categoryId}/foods",
+     *     operationId="getCategoryFoodsAction",
+     *     description="List of specified category foods",
+     *     @SWG\Parameter(
+     *         name="categoryId", format="uuid", type="string", required=true, in="path", description="ID of Category",
+     *     ),
+     *     @SWG\Response(response=200, description="List of Foods", @SWG\Schema(type="array", @SWG\Items(ref="#/definitions/Food"))),
+     * )
+     * @param Category $category
+     * @return Response
+     * @throws \InvalidArgumentException
+     * @View
+     */
+    public function getCategoryFoodsAction(Category $category)
+    {
+        $repo = $this->doctrine->getRepository('AppBundle:Food');
+
+        return $repo->findBy(['category' => $category]);
     }
 }

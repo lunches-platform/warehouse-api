@@ -11,14 +11,24 @@ use Doctrine\ORM\EntityRepository;
 class FoodRepository extends EntityRepository
 {
     /**
-     * @param string $like
+     * @param array|string $like
      * @return array
      */
     public function findByNameLike($like)
     {
-        $dql = 'SELECT f,a FROM AppBundle\Entity\Food f JOIN f.aliases a WHERE a.name.name LIKE :like';
+        $qb = $this->createQueryBuilder('f');
+        $qb->select('f');
+        $qb->join('f.aliases', 'a');
 
-        return $this->_em->createQuery($dql)->setParameter('like', '%'.$like.'%')->getResult();
+        $like = (array) $like;
+
+        $i = 0;
+        foreach ($like as $l) {
+            $qb->orWhere('a.name.name LIKE ?'.$i);
+            $qb->setParameter($i++, '%'.$l.'%');
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

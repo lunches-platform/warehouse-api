@@ -66,7 +66,7 @@ class Product implements \JsonSerializable
     protected $pcs = true;
     /**
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      * @SWG\Property()
      */
     protected $weightPerPcs;

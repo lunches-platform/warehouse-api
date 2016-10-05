@@ -4,6 +4,7 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\Food;
 use AppBundle\Entity\Product;
 use AppBundle\Exception\EntityNotFoundException;
 use AppBundle\Service\CreateProduct;
@@ -12,6 +13,7 @@ use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Uuid;
 use Swagger\Annotations AS SWG;
 
@@ -70,6 +72,7 @@ class ProductsController
      * @param ParamFetcher $params
      * @return \Symfony\Component\HttpFoundation\Response
      * @QueryParam(name="like", description="Filter products by LIKE pattern")
+     * @QueryParam(name="foodId", nullable=true, requirements=@Uuid, description="Filter products by specific kind of food")
      * @View
      */
     public function getProductsAction(ParamFetcher $params)
@@ -77,6 +80,8 @@ class ProductsController
         $repo = $this->doctrine->getRepository('AppBundle:Product');
         if ($like = $params->get('like')) {
             return $repo->findByNameLike($like);
+        } elseif ($foodId = $params->get('foodId')) {
+            return $repo->findBy(['food' => $foodId]);
         } else {
             return $repo->findAll();
         }

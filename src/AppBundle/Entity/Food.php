@@ -132,7 +132,7 @@ class Food implements \JsonSerializable
         return [
             'id' => (string) $this->id,
             'name' => (string) $this->name,
-            'category' => null === $this->category ? null : $this->category->name(),
+            'category' => null === $this->category ? null : (string) $this->category->name(),
             'aliases' => $this->aliases->map(function(FoodAlias $alias) {
                 return $alias->jsonSerialize();
             }),
