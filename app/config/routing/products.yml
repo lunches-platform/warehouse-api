@@ -11,3 +11,8 @@ outcomes:
     type: rest
     parent: products
     resource: "@AppBundle/Controller/OutcomesController.php"
+
+prices:
+    type: rest
+    parent: products
+    resource: "@AppBundle/Controller/PricesController.php"

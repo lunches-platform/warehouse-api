@@ -72,6 +72,13 @@ class Product implements \JsonSerializable
     protected $weightPerPcs;
 
     /**
+     * @var Price
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Price")
+     * @SWG\Property()
+     */
+    private $lastPrice;
+
+    /**
      * Product constructor.
      * @param Food $food
      * @param EntityName $name
@@ -96,6 +103,14 @@ class Product implements \JsonSerializable
     public function distributesInPcs()
     {
         return $this->pcs === true;
+    }
+
+    /**
+     * @param Price $price
+     */
+    public function refreshLastPrice(Price $price)
+    {
+        $this->lastPrice = $price;
     }
 
     /**
@@ -146,6 +161,7 @@ class Product implements \JsonSerializable
             'food' => $this->food,
             'pcs' => $this->pcs,
             'weightPerPcs' => $this->weightPerPcs,
+            'lastPrice' => $this->lastPrice,
         ];
     }
 }
