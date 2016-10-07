@@ -1,0 +1,1121 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Warehouse API",
+        "description": "REST API which allows to manage small warehouse",
+        "contact": {
+            "name": "Lunches API Team"
+        },
+        "version": "1.0.0"
+    },
+    "basePath": "/",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/brands/{brandId}": {
+            "get": {
+                "description": "Get Brand by ID",
+                "operationId": "getBrandAction",
+                "parameters": [
+                    {
+                        "name": "brandId",
+                        "in": "path",
+                        "description": "ID of Brand",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Brand",
+                        "schema": {
+                            "$ref": "#/definitions/Brand"
+                        }
+                    }
+                }
+            }
+        },
+        "/brands": {
+            "get": {
+                "description": "Get all brands registered",
+                "operationId": "getBrandsAction",
+                "parameters": [
+                    {
+                        "name": "like",
+                        "in": "query",
+                        "description": "Filter brands by LIKE pattern",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Brands",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Brand"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates new brand",
+                "operationId": "postBrandsAction",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "description": "Brand name",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Brand"
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Brand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly created Brand",
+                        "schema": {
+                            "$ref": "#/definitions/Brand"
+                        }
+                    }
+                }
+            }
+        },
+        "/categories/{categoryId}": {
+            "get": {
+                "description": "Get Category by ID",
+                "operationId": "getCategoryAction",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "description": "ID of category",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category",
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "description": "Return all categories registered",
+                "operationId": "getCategoriesAction",
+                "responses": {
+                    "200": {
+                        "description": "List of Categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Category"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates new category",
+                "operationId": "postCategoriesAction",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "description": "Category name",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "body",
+                        "description": "Category type. It can be treated as 'category of category' or just section",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    },
+                    {
+                        "name": "unit",
+                        "in": "body",
+                        "description": "Smallest Unit of the Product.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly created Category",
+                        "schema": {
+                            "$ref": "#/definitions/Category"
+                        }
+                    }
+                }
+            }
+        },
+        "/foods/{foodId}": {
+            "get": {
+                "description": "Get Food by ID",
+                "operationId": "getFoodAction",
+                "parameters": [
+                    {
+                        "name": "foodId",
+                        "in": "path",
+                        "description": "ID of food",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Food",
+                        "schema": {
+                            "$ref": "#/definitions/Food"
+                        }
+                    }
+                }
+            }
+        },
+        "/foods": {
+            "get": {
+                "description": "Return foods by filters",
+                "operationId": "getFoodsAction",
+                "parameters": [
+                    {
+                        "name": "like",
+                        "in": "query",
+                        "description": "Filter foods by LIKE pattern",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Foods",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Food"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates new food",
+                "operationId": "postFoodsAction",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "description": "Food name",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Food"
+                        }
+                    },
+                    {
+                        "name": "categoryId",
+                        "in": "body",
+                        "description": "ID of category",
+                        "schema": {
+                            "$ref": "#/definitions/Food"
+                        },
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly created Food",
+                        "schema": {
+                            "$ref": "#/definitions/Food"
+                        }
+                    }
+                }
+            }
+        },
+        "/foods/import-csv": {
+            "post": {
+                "description": "Allows to import several foods via CSV format",
+                "operationId": "importCsvAction",
+                "parameters": [
+                    {
+                        "name": "delimiter",
+                        "in": "formData",
+                        "description": "Symbol which separates one column from another",
+                        "type": "string",
+                        "default": ";",
+                        "enum": [
+                            ";",
+                            ",",
+                            "\\t"
+                        ]
+                    },
+                    {
+                        "name": "skipRows",
+                        "in": "formData",
+                        "description": "Count number of rows skip from the beggining of the file",
+                        "type": "integer",
+                        "default": "0"
+                    },
+                    {
+                        "name": "file",
+                        "in": "formData",
+                        "description": "File to import",
+                        "required": true,
+                        "type": "file"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly created Food",
+                        "schema": {
+                            "$ref": "#/definitions/Food"
+                        }
+                    }
+                }
+            }
+        },
+        "/foods/{foodId}/aliases/{alias}": {
+            "put": {
+                "description": "Adds alias for food",
+                "operationId": "postFoodAliasesAction",
+                "parameters": [
+                    {
+                        "name": "foodId",
+                        "in": "path",
+                        "description": "ID of Food",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "name": "alias",
+                        "in": "path",
+                        "description": "Alias name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    }
+                }
+            }
+        },
+        "/categories/{categoryId}/foods": {
+            "get": {
+                "description": "List of specified category foods",
+                "operationId": "getCategoryFoodsAction",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "description": "ID of Category",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Foods",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Food"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/incomes/{incomeId}": {
+            "get": {
+                "description": "Get Income by ID",
+                "operationId": "getIncomeAction",
+                "parameters": [
+                    {
+                        "name": "incomeId",
+                        "in": "path",
+                        "description": "ID of Income",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Income",
+                        "schema": {
+                            "$ref": "#/definitions/Income"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{productId}/incomes": {
+            "get": {
+                "description": "Get incomes by product",
+                "operationId": "getIncomesAction",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "ID of Product",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Incomes",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Income"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates new Income",
+                "operationId": "postIncomesAction",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "ID of Product",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "name": "quantity",
+                        "in": "body",
+                        "description": "Quantity of income Product",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Income"
+                        },
+                        "type": "float"
+                    },
+                    {
+                        "name": "purchasedAt",
+                        "in": "body",
+                        "description": "Actual date when Product was purchased",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/Income"
+                        },
+                        "type": "dateTime"
+                    },
+                    {
+                        "name": "supplierId",
+                        "in": "body",
+                        "description": "ID of Supplier",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Income"
+                        },
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "name": "price",
+                        "in": "body",
+                        "description": "Price in smallest unit of currency",
+                        "schema": {
+                            "$ref": "#/definitions/Income"
+                        },
+                        "type": "integer"
+                    },
+                    {
+                        "name": "warehouseKeeper",
+                        "in": "body",
+                        "description": "Person who is responsible about warehouse management",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Income"
+                        }
+                    },
+                    {
+                        "name": "purchaser",
+                        "in": "body",
+                        "description": "Person who has bought a Product",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Income"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly created Income",
+                        "schema": {
+                            "$ref": "#/definitions/Income"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/outcomes/{outcomeId}": {
+            "get": {
+                "description": "Get Outcome by ID",
+                "operationId": "getOutcomeAction",
+                "parameters": [
+                    {
+                        "name": "outcomeId",
+                        "in": "path",
+                        "description": "ID of Outcome",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Outcome",
+                        "schema": {
+                            "$ref": "#/definitions/Outcome"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{productId}/outcomes": {
+            "get": {
+                "description": "Get outcomes by product",
+                "operationId": "getOutcomesAction",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "ID of Product",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Outcomes",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Outcome"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates new outcome",
+                "operationId": "postOutcomesAction",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "ID of Product",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "name": "quantity",
+                        "in": "body",
+                        "description": "Quantity of outcome Product",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Outcome"
+                        },
+                        "type": "float"
+                    },
+                    {
+                        "name": "outcomeAt",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Outcome"
+                        },
+                        "type": "dateTime"
+                    },
+                    {
+                        "name": "warehouseKeeper",
+                        "in": "body",
+                        "description": "Person who gives the Product",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Outcome"
+                        }
+                    },
+                    {
+                        "name": "cook",
+                        "in": "body",
+                        "description": "Person who gets the Product",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Outcome"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly created Outcome",
+                        "schema": {
+                            "$ref": "#/definitions/Outcome"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{productId}/prices": {
+            "post": {
+                "description": "Commits new Price",
+                "operationId": "postPricesAction",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "ID of Product",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "name": "timestamp",
+                        "in": "body",
+                        "description": "Actual date and time when Price was obtained",
+                        "schema": {
+                            "$ref": "#/definitions/Price"
+                        },
+                        "type": "dateTime"
+                    },
+                    {
+                        "name": "amount",
+                        "in": "body",
+                        "description": "Price amount in smallest unit of currency",
+                        "schema": {
+                            "$ref": "#/definitions/Price"
+                        },
+                        "type": "integer"
+                    },
+                    {
+                        "name": "currency",
+                        "in": "body",
+                        "description": "Currency of price",
+                        "schema": {
+                            "$ref": "#/definitions/Price"
+                        },
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly committed Price",
+                        "schema": {
+                            "$ref": "#/definitions/Price"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{productId}": {
+            "get": {
+                "description": "Get Product by ID",
+                "operationId": "getProductAction",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "ID of product",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product",
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "description": "Return products by filter conditions",
+                "operationId": "getProductsAction",
+                "parameters": [
+                    {
+                        "name": "like",
+                        "in": "query",
+                        "description": "Pattern of product name",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of Products",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Product"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates new product",
+                "operationId": "postProductsAction",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "description": "Product name",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    },
+                    {
+                        "name": "foodId",
+                        "in": "body",
+                        "description": "ID of Food",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        },
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "name": "brandId",
+                        "in": "body",
+                        "description": "ID of Brand",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        },
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    {
+                        "name": "pcs",
+                        "in": "body",
+                        "description": "Either Product distributes in pcs or no",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        },
+                        "type": "boolean",
+                        "enum": [
+                            "0",
+                            "1"
+                        ]
+                    },
+                    {
+                        "name": "wight",
+                        "in": "body",
+                        "description": "Product weight in corresponding unit",
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        },
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly created Product",
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    }
+                }
+            }
+        },
+        "/suppliers/{supplierId}": {
+            "get": {
+                "description": "Get Supplier by ID",
+                "operationId": "getSupplierAction",
+                "parameters": [
+                    {
+                        "name": "supplierId",
+                        "in": "path",
+                        "description": "ID of Supplier",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Supplier",
+                        "schema": {
+                            "$ref": "#/definitions/Supplier"
+                        }
+                    }
+                }
+            }
+        },
+        "/suppliers": {
+            "get": {
+                "description": "Get all suppliers registered",
+                "operationId": "getSuppliersAction",
+                "responses": {
+                    "200": {
+                        "description": "List of Suppliers",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Supplier"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates new supplier",
+                "operationId": "postSuppliersAction",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "description": "Supplier name",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Supplier"
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Supplier"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Newly created Supplier",
+                        "schema": {
+                            "$ref": "#/definitions/Supplier"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Error": {
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#definitions/Error"
+                    }
+                }
+            }
+        },
+        "Brand": {
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "confirmed": {
+                    "description": "Whether brand is manually confirmed or not",
+                    "type": "boolean"
+                }
+            }
+        },
+        "Category": {
+            "required": [
+                "name",
+                "type",
+                "unit"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "unit": {
+                    "description": "One of gr|ml",
+                    "type": "string",
+                    "enum": [
+                        "gr",
+                        "ml"
+                    ]
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "Food": {
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {},
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "category": {
+                    "$ref": "#/definitions/Category"
+                }
+            }
+        },
+        "FoodAlias": {
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "Income": {
+            "required": [
+                "product",
+                "quantity",
+                "price",
+                "supplier"
+            ],
+            "properties": {
+                "price": {
+                    "description": "Price of the product",
+                    "type": "integer"
+                },
+                "currency": {
+                    "description": "Currency of the price",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "product": {
+                    "$ref": "#/definitions/Product"
+                },
+                "quantity": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "purchasedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "supplier": {
+                    "$ref": "#/definitions/Supplier"
+                },
+                "purchaser": {
+                    "type": "string"
+                },
+                "warehouseKeeper": {
+                    "type": "string"
+                }
+            }
+        },
+        "Outcome": {
+            "required": [
+                "product",
+                "quantity"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "product": {
+                    "$ref": "#/definitions/Product"
+                },
+                "quantity": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "outcomeAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "cook": {
+                    "type": "string"
+                },
+                "warehouseKeeper": {
+                    "type": "string"
+                }
+            }
+        },
+        "Price": {
+            "required": [
+                "product",
+                "price",
+                "timestamp"
+            ],
+            "properties": {
+                "value": {
+                    "description": "Price of the product",
+                    "type": "integer"
+                },
+                "currency": {
+                    "description": "Currency of the price",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "product": {
+                    "$ref": "#/definitions/Product"
+                },
+                "timestamp": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "Product": {
+            "required": [
+                "food",
+                "name",
+                "brand"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "brand": {
+                    "$ref": "#/definitions/Brand"
+                },
+                "food": {
+                    "$ref": "#/definitions/Food"
+                },
+                "pcs": {
+                    "description": "Either Product distributes in pcs or no",
+                    "type": "boolean"
+                },
+                "weightPerPcs": {
+                    "type": "integer"
+                },
+                "lastPrice": {
+                    "$ref": "#/definitions/Price"
+                }
+            }
+        },
+        "Supplier": {
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {},
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "confirmed": {
+                    "description": "Whether supplier is confirmed manually or not",
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}
