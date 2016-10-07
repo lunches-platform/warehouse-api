@@ -209,9 +209,9 @@ class FoodsController
      *         name="foodId", format="uuid", type="string", required=true, in="path", description="ID of Food",
      *     ),
      *     @SWG\Parameter(
-     *         name="alias", description="", required=true, in="path",
+     *         name="alias", description="Alias name", required=true, in="path", type="string"
      *     ),
-     *     @SWG\Response(response=204)
+     *     @SWG\Response(response=204, description="No content")
      * )
      * @param Food $food
      * @param string $alias
